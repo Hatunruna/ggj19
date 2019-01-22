@@ -1,0 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define GGJ_DATA_DIR "@GGJ_DATA_DIR@"
+
+#endif // CONFIG_H
