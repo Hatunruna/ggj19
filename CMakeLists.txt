@@ -19,6 +19,8 @@ endif()
 
 add_executable(ggj
   code/main.cc
+  code/local/ResourceManager.cc
+  code/local/Singletons.cc
 )
 
 target_include_directories(ggj

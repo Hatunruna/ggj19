@@ -4,9 +4,14 @@
 #include <gf/EntityContainer.h>
 #include <gf/Event.h>
 #include <gf/RenderWindow.h>
+#include <gf/Singleton.h>
 #include <gf/ViewContainer.h>
 #include <gf/Views.h>
 #include <gf/Window.h>
+
+#include "local/Singletons.h"
+
+#include "config.h"
 
 int main() {
   static constexpr gf::Vector2u ScreenSize(1024, 576);
@@ -20,6 +25,14 @@ int main() {
   window.setFramerateLimit(60);
 
   gf::RenderWindow renderer(window);
+
+  // singletons
+
+  gf::SingletonStorage<ggj::ResourceManager> storageForResourceManager(ggj::gResourceManager);
+  ggj::gResourceManager().addSearchDir(GGJ_DATA_DIR);
+
+  gf::SingletonStorage<gf::MessageManager> storageForMessageManager(ggj::gMessageManager);
+  gf::SingletonStorage<gf::Random> storageForRandom(ggj::gRandom);
 
   // views
 
