@@ -28,11 +28,11 @@ int main() {
 
   // singletons
 
-  gf::SingletonStorage<ggj::ResourceManager> storageForResourceManager(ggj::gResourceManager);
-  ggj::gResourceManager().addSearchDir(GGJ_DATA_DIR);
+  gf::SingletonStorage<home::ResourceManager> storageForResourceManager(home::gResourceManager);
+  home::gResourceManager().addSearchDir(HOME_DATA_DIR);
 
-  gf::SingletonStorage<gf::MessageManager> storageForMessageManager(ggj::gMessageManager);
-  gf::SingletonStorage<gf::Random> storageForRandom(ggj::gRandom);
+  gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
+  gf::SingletonStorage<gf::Random> storageForRandom(home::gRandom);
 
   // views
 

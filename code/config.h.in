@@ -1,6 +1,6 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef HOME_CONFIG_H
+#define HOME_CONFIG_H
 
-#define GGJ_DATA_DIR "@GGJ_DATA_DIR@"
+#define HOME_DATA_DIR "@HOME_DATA_DIR@"
 
-#endif // CONFIG_H
+#endif // HOME_CONFIG_H

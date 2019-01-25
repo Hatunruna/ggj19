@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LOCAL_SINGLETONS_H
-#define _LOCAL_SINGLETONS_H
+#ifndef HOME_SINGLETONS_H
+#define HOME_SINGLETONS_H
 
 #include <gf/MessageManager.h>
 #include <gf/Random.h>
@@ -25,7 +25,7 @@
 
 #include "ResourceManager.h"
 
-namespace ggj {
+namespace home {
 
   extern gf::Singleton<ResourceManager> gResourceManager;
 
@@ -34,4 +34,4 @@ namespace ggj {
 
 }
 
-#endif // _LOCAL_SINGLETONS_H
+#endif // HOME_SINGLETONS_H

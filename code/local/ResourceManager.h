@@ -1,10 +1,10 @@
-#ifndef GGJ_RESOURCEMANAGER_H
-#define GGJ_RESOURCEMANAGER_H
+#ifndef HOME_RESOURCEMANAGER_H
+#define HOME_RESOURCEMANAGER_H
 
 #include <gf/ResourceManager.h>
 #include <SFML/Audio.hpp>
 
-namespace ggj {
+namespace home {
 
   class ResourceManager : public gf::ResourceManager {
   public:
@@ -19,4 +19,4 @@ namespace ggj {
 
 }
 
-#endif // GGJ_RESOURCEMANAGER_H
+#endif // HOME_RESOURCEMANAGER_H

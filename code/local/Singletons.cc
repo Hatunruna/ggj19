@@ -1,6 +1,6 @@
 #include "Singletons.h"
 
-namespace ggj {
+namespace home {
 
   gf::Singleton<ResourceManager> gResourceManager;
 

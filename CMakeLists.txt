@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(GGJ
+project(HOME
   VERSION 0.1.0
 )
 
@@ -17,29 +17,29 @@ if(NOT MSVC)
   add_definitions(-Wall -Wextra -g -O2 -std=c++14 -pedantic)
 endif()
 
-add_executable(ggj
+add_executable(home
   code/main.cc
   code/local/ResourceManager.cc
   code/local/Singletons.cc
 )
 
-target_include_directories(ggj
+target_include_directories(home
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/code
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(ggj
+target_link_libraries(home
   gf::gf0
   ${SFML2_LIBRARIES}
 )
 
 install(
-  TARGETS ggj
+  TARGETS home
   RUNTIME DESTINATION games
 )
 
 install(
-  DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/ggj"
+  DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data/home"
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/games"
 )

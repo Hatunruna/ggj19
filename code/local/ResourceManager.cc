@@ -1,6 +1,6 @@
 #include "ResourceManager.h"
 
-namespace ggj {
+namespace home {
 
   namespace {
     template<typename T>
