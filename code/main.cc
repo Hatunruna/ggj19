@@ -9,6 +9,8 @@
 #include <gf/Views.h>
 #include <gf/Window.h>
 
+#include "local/Map.h"
+
 #include "local/Singletons.h"
 
 #include "config.h"
@@ -84,12 +86,15 @@ int main() {
   actions.addAction(downAction);
 
   // entities
+  home::Map map;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
+  mainEntities.addEntity(map);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
+
 
   // game loop
 

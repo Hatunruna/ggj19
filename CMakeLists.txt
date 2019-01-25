@@ -19,6 +19,7 @@ endif()
 
 add_executable(home
   code/main.cc
+  code/local/Map.cc
   code/local/ResourceManager.cc
   code/local/Singletons.cc
 )
