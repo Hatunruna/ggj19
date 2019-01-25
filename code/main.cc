@@ -3,6 +3,7 @@
 #include <gf/Color.h>
 #include <gf/EntityContainer.h>
 #include <gf/Event.h>
+#include <gf/Log.h>
 #include <gf/RenderWindow.h>
 #include <gf/Singleton.h>
 #include <gf/ViewContainer.h>
@@ -10,9 +11,8 @@
 #include <gf/Window.h>
 
 #include "local/Map.h"
-
+#include "local/Messages.h"
 #include "local/Singletons.h"
-
 #include "config.h"
 
 int main() {
@@ -110,6 +110,16 @@ int main() {
     while (window.pollEvent(event)) {
       actions.processEvent(event);
       views.processEvent(event);
+      switch (event.type) {
+        case gf::EventType::MouseMoved:
+        {
+          auto mapCoord = renderer.mapPixelToCoords(event.mouseCursor.coords, mainView);
+          home::CursorPosition pos;
+          pos.position = mapCoord;
+          home::gMessageManager().sendMessage(&pos);break;
+        }
+        default:break;
+      }
     }
 
     if (closeWindowAction.isActive()) {

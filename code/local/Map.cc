@@ -1,10 +1,14 @@
 #include "Map.h"
-#include <gf/Shapes.h>
+
+#include <gf/Log.h>
 #include <gf/RenderTarget.h>
+#include <gf/Shapes.h>
+
+#include "Singletons.h"
 
 namespace home {
     Map::Map() {
-
+        gMessageManager().registerHandler<CursorPosition>(&Map::onCursorPosition, this);
     }
 
     void Map::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -15,4 +19,11 @@ namespace home {
         rect.setAnchor(gf::Anchor::Center);
         target.draw(rect, states);
     }
+
+    gf::MessageStatus Map::onCursorPosition(gf::Id id, gf::Message *msg) {
+        assert(id == CursorPosition::type);
+        CursorPosition *message = static_cast<CursorPosition*>(msg);
+        gf::Log::debug("Mouse coordinates: %f, %f\n", message->position.x, message->position.y);
+        return gf::MessageStatus::Keep;
+    }   
 }
