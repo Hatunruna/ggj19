@@ -12,6 +12,7 @@
 
 #include "local/Map.h"
 #include "local/Messages.h"
+#include "local/Player.h"
 #include "local/Singletons.h"
 #include "config.h"
 
@@ -87,10 +88,12 @@ int main() {
 
   // entities
   home::Map map;
+  home::Player player;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
+  mainEntities.addEntity(player);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
@@ -114,8 +117,16 @@ int main() {
         case gf::EventType::MouseMoved:
         {
           auto mapCoord = renderer.mapPixelToCoords(event.mouseCursor.coords, mainView);
-          home::CursorPosition pos;
+          home::CursorMovedPosition pos;
           pos.position = mapCoord;
+          home::gMessageManager().sendMessage(&pos);
+          break;
+        }
+        case gf::EventType::MouseButtonReleased:
+        {
+          auto coord = renderer.mapPixelToCoords(event.mouseButton.coords, mainView);
+          home::CursorClickedPosition pos;
+          pos.position = coord;
           home::gMessageManager().sendMessage(&pos);break;
         }
         default:break;
