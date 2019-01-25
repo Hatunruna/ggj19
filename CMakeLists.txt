@@ -10,7 +10,7 @@ find_package(gf REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
 
-set(GGJ_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/krokodile")
+set(GGJ_DATA_DIR "${CMAKE_INSTALL_PREFIX}/share/games/home")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/code/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h @ONLY)
 
 if(NOT MSVC)
@@ -19,6 +19,7 @@ endif()
 
 add_executable(home
   code/main.cc
+  code/local/FieldOfView.cc
   code/local/Map.cc
   code/local/ResourceManager.cc
   code/local/Singletons.cc

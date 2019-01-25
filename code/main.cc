@@ -10,6 +10,7 @@
 #include <gf/Views.h>
 #include <gf/Window.h>
 
+#include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
 #include "local/Singletons.h"
@@ -31,6 +32,7 @@ int main() {
   // singletons
 
   gf::SingletonStorage<home::ResourceManager> storageForResourceManager(home::gResourceManager);
+  gf::Log::debug("data dir: %s\n", HOME_DATA_DIR);
   home::gResourceManager().addSearchDir(HOME_DATA_DIR);
 
   gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
@@ -87,10 +89,12 @@ int main() {
 
   // entities
   home::Map map;
+  home::FieldOfView fov;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
+  mainEntities.addEntity(fov);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
