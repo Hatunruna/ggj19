@@ -1,20 +1,5 @@
-What Home means to you.
 
 --
-
-Acronyme :
-  Holy Order of Mother Earth
-  Haven Of My Existence
-  Habitat Open Management Engine
-
-  Harvest
-  Oxygen
-  (on the)
-  Moldoran
-  Eco-System Empire
-
---
-
 Gameplay :
   - Jour/Nuit ???
   - Black screen with halo of light around you.
