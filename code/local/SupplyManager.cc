@@ -6,6 +6,7 @@
 
 namespace home {
   static constexpr gf::Vector2i TileSize = {128, 64};
+
   SupplyManager::SupplyManager() {
     m_supplies.push_back({SupplyType::Metal, 1000.0f, {5, 5}});
   }
