@@ -2,6 +2,7 @@
 #define HOME_FIELD_OF_VIEW_H
 
 #include <gf/Entity.h>
+#include <gf/Message.h>
 #include <gf/Texture.h>
 
 namespace home {
@@ -11,8 +12,11 @@ namespace home {
 
     virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
+    gf::MessageStatus onHeroPosition(gf::Id id, gf::Message *msg);
+
   private:
     gf::Texture &m_texture;
+    gf::Vector2f m_position;
   };
 }
 
