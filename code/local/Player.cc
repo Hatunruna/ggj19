@@ -8,24 +8,24 @@
 #include "Singletons.h"
 
 namespace home {
-  static constexpr float Velocity = 20.0f;
-  static constexpr float Radius = 5.0f;
+  static constexpr float Velocity = 200.0f;
+  static constexpr float Radius = 20.0f;
 
-  Player::Player() 
+  Player::Player()
   : m_position({0.0f, 0.0f})
   , m_positionClicked({0.0f, 0.0f}) {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
   }
 
   void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    gf::CircleShape player;      
+    gf::CircleShape player;
     player.setColor(gf::Color::Blue);
     player.setRadius(Radius);
     player.setPosition(m_position);
     player.setAnchor(gf::Anchor::Center);
     target.draw(player, states);
   }
-  
+
   void Player::update(gf::Time time) {
     //gf::Log::debug("player position: %f, %f\n", m_position.x, m_position.y);
     gf::Vector2f move = m_positionClicked - m_position;
@@ -37,6 +37,10 @@ namespace home {
     } else {
       m_position += move;
     }
+
+    HeroPosition message;
+    message.position = m_position;
+    gMessageManager().sendMessage(&message);
   }
 
   gf::MessageStatus Player::onMouseClicked(gf::Id id, gf::Message *msg) {
