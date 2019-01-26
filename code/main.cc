@@ -144,7 +144,7 @@ int main() {
     return gf::MessageStatus::Keep;
   });
 
-  renderer.clear(gf::Color::White);
+  renderer.clear(gf::Color::Gray(0.2f));
 
   gf::Clock clock;
 
