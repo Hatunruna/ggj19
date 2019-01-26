@@ -8,12 +8,14 @@
 #include "Singletons.h"
 
 namespace home {
-  static constexpr float Velocity = 20.0f;
-  static constexpr float Radius = 5.0f;
+  static constexpr float Velocity = 100.0f;
+  static constexpr float OxygenLoss = 0.5f;
+  static constexpr float Radius = 20.0f;
 
   Player::Player() 
   : m_position({0.0f, 0.0f})
-  , m_positionClicked({0.0f, 0.0f}) {
+  , m_positionClicked({0.0f, 0.0f})
+  , m_oxygen(100.0f) {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
   }
 
@@ -36,6 +38,13 @@ namespace home {
       m_position += (move / length) * time.asSeconds() * Velocity;
     } else {
       m_position += move;
+    }
+
+    m_oxygen -= time.asSeconds() * OxygenLoss;
+    if (m_oxygen > 0) {
+      gf::Log::info("Oxygen: %f\n", m_oxygen);
+    } else {
+      gf::Log::info("Player is dead. RIP in peace.\n");
     }
   }
 
