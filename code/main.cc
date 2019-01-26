@@ -16,9 +16,10 @@
 #include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
+#include "local/OxygenHud.h"
 #include "local/Physics.h"
 #include "local/Player.h"
-#include "local/ResourcesViewer.h"
+#include "local/ResourcesHud.h"
 #include "local/Singletons.h"
 #include "local/SupplyManager.h"
 #include "config.h"
@@ -60,10 +61,10 @@ int main() {
 
   // background music
   float bgmVol = 10.0f;
-  bool bgmMuted = false;
+  bool bgmMuted = true;
   sf::Sound bgm(home::gResourceManager().getSound("sounds/main_theme.ogg"));
   bgm.setLoop(true);
-  bgm.setVolume(bgmVol);
+  bgm.setVolume(0.0f);
   bgm.play();
 
   // actions
@@ -128,7 +129,8 @@ int main() {
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
-  home::ResourcesViewer rviewer;
+  home::OxygenHud oxygenHud;
+  home::ResourcesHud resourcesHud;
   home::SupplyManager supplies;
 
   home::Physics physics(layers, player);
@@ -148,7 +150,8 @@ int main() {
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
   hudEntities.addEntity(clockHud);
-  hudEntities.addEntity(rviewer);
+  hudEntities.addEntity(oxygenHud);
+  hudEntities.addEntity(resourcesHud);
 
 
 

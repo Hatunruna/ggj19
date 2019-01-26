@@ -28,9 +28,12 @@ add_executable(home
   code/local/Physics.cc
   code/local/Player.cc
   code/local/ResourceManager.cc
-  code/local/ResourcesViewer.cc
+  code/local/ResourcesHud.cc
+  code/local/Singletons.cc
+  code/local/OxygenHud.cc
   code/local/Singletons.cc
   code/local/SupplyManager.cc
+
 )
 
 target_include_directories(home
