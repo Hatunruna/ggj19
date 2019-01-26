@@ -10,10 +10,11 @@
 namespace home {
   static constexpr float Velocity = 200.0f;
   static constexpr float Radius = 20.0f;
+  static constexpr gf::Vector2f TileSize = {128, 64};
 
   Player::Player()
-  : m_position({0.0f, 0.0f})
-  , m_positionClicked({0.0f, 0.0f})
+  : m_position(TileSize * gf::Vector2f(41.0f, 91.0f))
+  , m_positionClicked(TileSize * gf::Vector2f(41.0f, 91.0f))
   , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
   , m_wasJetSound(false){
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
