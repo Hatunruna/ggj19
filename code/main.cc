@@ -20,6 +20,7 @@
 #include "local/Player.h"
 #include "local/ResourcesHud.h"
 #include "local/Singletons.h"
+#include "local/SupplyManager.h"
 #include "config.h"
 
 int main() {
@@ -122,12 +123,14 @@ int main() {
   home::ClockHud clockHud;
   home::OxygenHud oxygenHud;
   home::ResourcesHud resourcesHud;
+  home::SupplyManager supplies;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
   mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
+  mainEntities.addEntity(supplies);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
@@ -144,7 +147,7 @@ int main() {
     return gf::MessageStatus::Keep;
   });
 
-  renderer.clear(gf::Color::White);
+  renderer.clear(gf::Color::Gray(0.2f));
 
   gf::Clock clock;
 

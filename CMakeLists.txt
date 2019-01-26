@@ -27,6 +27,9 @@ add_executable(home
   code/local/ResourcesHud.cc
   code/local/Singletons.cc
   code/local/OxygenHud.cc
+  code/local/Singletons.cc
+  code/local/SupplyManager.cc
+
 )
 
 target_include_directories(home
