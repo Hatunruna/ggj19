@@ -29,7 +29,7 @@ namespace home {
     // Position of the minerals hud
     static constexpr gf::Vector2f MineralsPosition = {0.95f, 0.80f}; 
     // Offset of the icon (to the left)
-    static constexpr float OffsetIconMinerals = 0.05f;
+    static constexpr float OffsetIconMinerals = 0.13f;
     static constexpr float OffsetIconEnergy = 0.13f;
     static constexpr float OffsetBar = 0.12f;
     // Relative vertical distance between the 2 elements of the HUD
