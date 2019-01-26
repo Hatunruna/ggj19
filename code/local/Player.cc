@@ -9,14 +9,11 @@
 
 namespace home {
   static constexpr float Velocity = 200.0f;
-  static constexpr float OxygenLoss = 0.5f;
-
   static constexpr float Radius = 20.0f;
 
   Player::Player()
   : m_position({0.0f, 0.0f})
-  , m_positionClicked({0.0f, 0.0f})
-  , m_oxygen(100.0f) {
+  , m_positionClicked({0.0f, 0.0f}){
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
   }
 
@@ -41,13 +38,6 @@ namespace home {
       m_position += move;
     }
 
-    m_oxygen -= time.asSeconds() * OxygenLoss;
-    if (m_oxygen > 0) {
-      gf::Log::info("Oxygen: %f\n", m_oxygen);
-    } else {
-      gf::Log::info("Player is dead. RIP in peace.\n");
-    }
-
     HeroPosition message;
     message.position = m_position;
     gMessageManager().sendMessage(&message);
@@ -58,7 +48,6 @@ namespace home {
     // store mouse coordinates
     m_positionClicked = static_cast<CursorClickedPosition*>(msg)->position;
 
-    // gf::Log::debug("message position: %f, %f\n", message->position.x, message->position.y);
     return gf::MessageStatus::Keep;
   }
 }

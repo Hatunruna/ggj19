@@ -21,7 +21,6 @@ namespace home {
     static const gf::Id type = "HeroPosition"_id; // compile-time definition
     gf::Vector2f position;
   };
-
 }
 
 #endif // HOME_MESSAGES_H

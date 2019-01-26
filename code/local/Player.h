@@ -15,7 +15,6 @@ namespace home {
     private :
       gf::Vector2f m_position; // Current position of the player
       gf::Vector2f m_positionClicked; // Where the mouse was last clicked
-      float m_oxygen;
   };
 }
 
