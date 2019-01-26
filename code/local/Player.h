@@ -27,6 +27,7 @@ namespace home {
       virtual void update(gf::Time time) override;
       // Mouse click handler
       gf::MessageStatus onMouseClicked(gf::Id id, gf::Message *msg);
+      gf::MessageStatus onHarvestResource(gf::Id id, gf::Message *msg);
 
     private:
       void loadAnimation(gf::Animation &animation, int line);
@@ -40,6 +41,7 @@ namespace home {
 
       gf::Orientation m_orientation;
       bool m_moving;
+      bool m_overSupply;
 
       gf::Texture &m_moveAndPauseTexture;
 
@@ -62,6 +64,11 @@ namespace home {
       gf::Animation m_pause_south_west;
 
       gf::Animation m_south;
+
+      gf::Animation m_harvest_north_west;
+      gf::Animation m_harvest_north_east;
+      gf::Animation m_harvest_south_east;
+      gf::Animation m_harvest_south_west;
   };
 }
 
