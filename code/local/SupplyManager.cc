@@ -15,7 +15,7 @@ namespace home {
 
   SupplyManager::SupplyManager()
   : m_heroLocation({0.0f, 0.0f}){
-    m_supplies.push_back({SupplyType::Oxygen, 10.0f, {41, 96}});
+    m_supplies.push_back({SupplyType::Metal, 10.0f, {41, 96}});
 
     gMessageManager().registerHandler<HeroPosition>(&SupplyManager::onHeroPosition, this);
   }

@@ -33,6 +33,19 @@ namespace home {
     return gf::Orientation::West;
   }
 
+  gf::Orientation getHarvestOrientation(float angle) {
+    constexpr float Pi4 = gf::Pi / 4.0f;
+
+    if (-4.0f * Pi4 <= angle && angle < -2.0f * Pi4) {
+      return gf::Orientation::NorthWest;
+    } else if (-2.0f * Pi4 <= angle && angle < 0.0f * Pi4) {
+      return gf::Orientation::NorthEast;
+    } else if (0.0f * Pi4 <= angle && angle < 2.0f * Pi4) {
+      return gf::Orientation::SouthEast;
+    }
+    return gf::Orientation::SouthWest;
+  }
+
   Player::Player()
   : gf::Entity(100)
   , m_position(TileSize * gf::Vector2f(41.0f, 91.0f))
@@ -41,10 +54,12 @@ namespace home {
   , m_wasJetSound(false)
   , m_orientation(gf::Orientation::East)
   , m_moving(false)
-  , m_moveAndPauseTexture(gResourceManager().getTexture("images/player/move_pause_animation.png"))
+  , m_overSupply(false)
+  , m_moveAndPauseTexture(gResourceManager().getTexture("images/player/player_animations.png"))
   , m_currentAnimation(nullptr)
    {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
+    gMessageManager().registerHandler<HarvestResource>(&Player::onHarvestResource, this);
 
     m_jetSound.setLoop(true);
     m_jetSound.setVolume(100.0f);
@@ -67,6 +82,11 @@ namespace home {
     loadAnimation(m_pause_south_west, 13);
 
     loadAnimation(m_south, 14);
+
+    loadAnimation(m_harvest_north_west, 15);
+    loadAnimation(m_harvest_north_east, 16);
+    loadAnimation(m_harvest_south_east, 17);
+    loadAnimation(m_harvest_south_west, 18);
   }
 
   void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -86,14 +106,17 @@ namespace home {
   }
 
   void Player::update(gf::Time time) {
-    //gf::Log::debug("player position: %f, %f\n", m_position.x, m_position.y);
     gf::Vector2f move = m_positionClicked - m_position;
     float length = gf::euclideanLength(move);
 
     if (length > time.asSeconds() * Velocity) {
       // Update player position according to where the mouse is clicked
       m_position += (move / length) * time.asSeconds() * Velocity;
-      m_orientation = getOrientation(gf::angle(move));
+      if (m_overSupply) {
+        m_orientation = getHarvestOrientation(gf::angle(move));
+      } else {
+        m_orientation = getOrientation(gf::angle(move));
+      }
       m_moving = true;
     } else {
       m_position += move;
@@ -109,62 +132,85 @@ namespace home {
     }
 
     // Determine the animation
-    switch (m_orientation) {
-      case gf::Orientation::NorthWest:
-        if (m_moving) {
-          m_currentAnimation = &m_move_north_west;
-        } else {
-          m_currentAnimation = &m_pause_north_west;
-        }
-        break;
-      case gf::Orientation::North:
-        if (m_moving) {
-          m_currentAnimation = &m_move_north;
-        } else {
-          m_currentAnimation = &m_pause_north;
-        }
-        break;
-      case gf::Orientation::NorthEast:
-        if (m_moving) {
-          m_currentAnimation = &m_move_north_east;
-        } else {
-          m_currentAnimation = &m_pause_north_east;
-        }
-        break;
-      case gf::Orientation::East:
-        if (m_moving) {
-          m_currentAnimation = &m_move_east;
-        } else {
-          m_currentAnimation = &m_pause_east;
-        }
-        break;
-      case gf::Orientation::SouthEast:
-        if (m_moving) {
-          m_currentAnimation = &m_move_south_east;
-        } else {
-          m_currentAnimation = &m_pause_south_east;
-        }
-        break;
-      case gf::Orientation::South:
-        m_currentAnimation = &m_south;
-        break;
-      case gf::Orientation::SouthWest:
-        if (m_moving) {
-          m_currentAnimation = &m_move_south_west;
-        } else {
-          m_currentAnimation = &m_pause_south_west;
-        }
-        break;
-      case gf::Orientation::West:
-        if (m_moving) {
-          m_currentAnimation = &m_move_west;
-        } else {
-          m_currentAnimation = &m_pause_west;
-        }
-        break;
-      default:
-        assert(false);
-        break;
+    if (m_overSupply && !m_moving) {
+
+      // gf::Log::debug("harvest\n");
+      switch (m_orientation) {
+        case gf::Orientation::NorthWest:
+          m_currentAnimation = &m_harvest_north_west;
+          break;
+        case gf::Orientation::NorthEast:
+          m_currentAnimation = &m_harvest_north_east;
+          break;
+        case gf::Orientation::SouthEast:
+          m_currentAnimation = &m_harvest_south_east;
+          break;
+        case gf::Orientation::SouthWest:
+          m_currentAnimation = &m_harvest_south_west;
+          break;
+        default:
+          assert(false);
+          break;
+      }
+    }
+    else {
+      switch (m_orientation) {
+        case gf::Orientation::NorthWest:
+          if (m_moving) {
+            m_currentAnimation = &m_move_north_west;
+          } else {
+            m_currentAnimation = &m_pause_north_west;
+          }
+          break;
+        case gf::Orientation::North:
+          if (m_moving) {
+            m_currentAnimation = &m_move_north;
+          } else {
+            m_currentAnimation = &m_pause_north;
+          }
+          break;
+        case gf::Orientation::NorthEast:
+          if (m_moving) {
+            m_currentAnimation = &m_move_north_east;
+          } else {
+            m_currentAnimation = &m_pause_north_east;
+          }
+          break;
+        case gf::Orientation::East:
+          if (m_moving) {
+            m_currentAnimation = &m_move_east;
+          } else {
+            m_currentAnimation = &m_pause_east;
+          }
+          break;
+        case gf::Orientation::SouthEast:
+          if (m_moving) {
+            m_currentAnimation = &m_move_south_east;
+          } else {
+            m_currentAnimation = &m_pause_south_east;
+          }
+          break;
+        case gf::Orientation::South:
+          m_currentAnimation = &m_south;
+          break;
+        case gf::Orientation::SouthWest:
+          if (m_moving) {
+            m_currentAnimation = &m_move_south_west;
+          } else {
+            m_currentAnimation = &m_pause_south_west;
+          }
+          break;
+        case gf::Orientation::West:
+          if (m_moving) {
+            m_currentAnimation = &m_move_west;
+          } else {
+            m_currentAnimation = &m_pause_west;
+          }
+          break;
+        default:
+          assert(false);
+          break;
+      }
     }
 
     // Update sprite
@@ -173,6 +219,8 @@ namespace home {
     HeroPosition message;
     message.position = m_position;
     gMessageManager().sendMessage(&message);
+
+    m_overSupply = false;
   }
 
   gf::MessageStatus Player::onMouseClicked(gf::Id id, gf::Message *msg) {
@@ -183,8 +231,16 @@ namespace home {
     return gf::MessageStatus::Keep;
   }
 
+  gf::MessageStatus Player::onHarvestResource(gf::Id id, gf::Message *msg) {
+    assert(id == HarvestResource::type);
+
+    m_overSupply = true;
+
+    return gf::MessageStatus::Keep;
+  }
+
   void Player::loadAnimation(gf::Animation &animation, int line) {
-    static constexpr gf::Vector2f TextureSize = {5632.0f, 3840.0f};
+    static constexpr gf::Vector2f TextureSize = {5632.0f, 4864.0f};
     static constexpr gf::Vector2f FrameSize = {256.0f, 256.0f};
     static constexpr gf::Time frameTiming = gf::seconds(1.0f / 30.0f);
 
