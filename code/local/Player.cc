@@ -79,6 +79,7 @@ namespace home {
 
     gf::AnimatedSprite sprite;
     sprite.setAnimation(*m_currentAnimation);
+    sprite.setScale(0.75f);
     sprite.setPosition(m_position);
     sprite.setAnchor(gf::Anchor::Center);
     target.draw(sprite, states);
