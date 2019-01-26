@@ -11,11 +11,12 @@
 
 namespace home {
   static constexpr gf::Vector2i TileSize = {128, 64};
-  static constexpr float OxygenHarvestSpeed = 4.0f; // 12 unit / sec;
-
+  static constexpr float OxygenHarvestSpeed = 6.0f; // 8 unit / sec;
+  static constexpr float MetalHarvestSpeed = 8.0f;
+  static constexpr float EnergyHarvestSpeed = 8.0f;
   SupplyManager::SupplyManager()
   : m_heroLocation({0.0f, 0.0f}){
-    m_supplies.push_back({SupplyType::Oxygen, 10.0f, {41, 96}});
+    m_supplies.push_back({SupplyType::Oxygen, 20.0f, {41, 96}});
 
     gMessageManager().registerHandler<HeroPosition>(&SupplyManager::onHeroPosition, this);
   }
