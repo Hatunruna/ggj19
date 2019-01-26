@@ -10,6 +10,8 @@
 #include <gf/Views.h>
 #include <gf/Window.h>
 
+#include <SFML/Audio.hpp>
+
 #include "local/Map.h"
 #include "local/Messages.h"
 #include "local/Player.h"
@@ -48,6 +50,12 @@ int main() {
   views.addView(hudView);
 
   views.setInitialScreenSize(ScreenSize);
+
+  // background music
+  sf::Sound bgm(home::gResourceManager().getSound("sounds/main_theme.ogg"));
+  bgm.setLoop(true);
+  bgm.setVolume(10);
+  bgm.play();
 
   // actions
 
