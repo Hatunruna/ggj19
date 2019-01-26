@@ -61,7 +61,18 @@ namespace home {
       // Ressource sprite
       gf::RectangleShape rectangle;
       rectangle.setSize(TileSize);
-      rectangle.setColor(gf::Color::Red);
+      switch (supply.type)
+      {
+        case SupplyType::Metal:
+          rectangle.setColor(gf::Color::Gray(0.75f));
+          break;
+        case SupplyType::Oxygen:
+          rectangle.setColor(gf::Color::Blue);
+          break;
+        default:
+          rectangle.setColor(gf::Color::Yellow);
+          break;
+      }
       rectangle.setPosition(TileSize * supply.position);
       rectangle.setAnchor(gf::Anchor::Center);
       target.draw(rectangle, states);
