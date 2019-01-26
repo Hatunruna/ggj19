@@ -61,10 +61,10 @@ int main() {
 
   // background music
   float bgmVol = 10.0f;
-  bool bgmMuted = false;
+  bool bgmMuted = true;
   sf::Sound bgm(home::gResourceManager().getSound("sounds/main_theme.ogg"));
   bgm.setLoop(true);
-  bgm.setVolume(bgmVol);
+  bgm.setVolume(0.0f);
   bgm.play();
 
   // actions
@@ -133,12 +133,19 @@ int main() {
   home::ResourcesHud resourcesHud;
   home::SupplyManager supplies;
 
+  home::Physics physics(layers, player);
+  home::PhysicsDebugger debugger(physics);
+  home::PhysicsDraw draw(debugger);
+
+  physics.setDraw(&draw);
+
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
   mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
   mainEntities.addEntity(supplies);
+  mainEntities.addEntity(debugger);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
@@ -146,7 +153,7 @@ int main() {
   hudEntities.addEntity(oxygenHud);
   hudEntities.addEntity(resourcesHud);
 
-  home::Physics physics(layers);
+
 
   // game loop
 
@@ -236,6 +243,7 @@ int main() {
     gf::Time time = clock.restart();
     mainEntities.update(time);
     hudEntities.update(time);
+    physics.update(time);
 
 
     // 3. draw

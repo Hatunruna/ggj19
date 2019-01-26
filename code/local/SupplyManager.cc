@@ -31,10 +31,20 @@ namespace home {
 
         supply.quantity -= quantity;
 
+        if (!supply.soundStarted) {
+          supply.miningSound.play();
+          supply.soundStarted = true;
+        }
+
         HarvestResource message;
         message.resourceType = supply.type;
         message.quantity = quantity;
         gMessageManager().sendMessage(&message);
+      } else {
+        if (supply.soundStarted) {
+          supply.soundStarted = false;
+          supply.miningSound.stop();
+        }
       }
     }
 

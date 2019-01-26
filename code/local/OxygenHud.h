@@ -1,6 +1,8 @@
 #ifndef HOME_OXYGENHUD_H
 #define HOME_OXYGENHUD_H
 
+#include <SFML/Audio.hpp>
+
 #include <gf/Entity.h>
 #include <gf/Texture.h>
 
@@ -13,6 +15,10 @@ namespace home {
     private :
       float m_oxygen;
       gf::Texture &m_oxygenIcon;
+
+      sf::Sound m_lowO2Sound;
+      float m_lowO2Volume;
+      bool m_lowO2SoundStarted;
   };
 }
 

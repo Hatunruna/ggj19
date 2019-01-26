@@ -3,9 +3,13 @@
 
 #include <vector>
 
+#include <SFML/Audio.hpp>
+
 #include <gf/Entity.h>
 #include <gf/Message.h>
 #include <gf/Vector.h>
+
+#include "Singletons.h"
 
 namespace home {
   enum class SupplyType {
@@ -17,14 +21,26 @@ namespace home {
     : type(_type)
     , initialQuantity(_quantity)
     , quantity(_quantity)
-    , position(_position) {
-
+    , position(_position)
+    , soundStarted(false) {
+      switch (type) {
+        case SupplyType::Metal:
+          miningSound.setBuffer(gResourceManager().getSound("sounds/mining.ogg"));
+          break;
+        default:
+          miningSound.setBuffer(gResourceManager().getSound("sounds/o2_filling.ogg"));
+          break;
+      }
+      miningSound.setLoop(true);
+      miningSound.setVolume(50.0f);
     }
 
     SupplyType type;
     float initialQuantity;
     float quantity;
     gf::Vector2i position;
+    sf::Sound miningSound;
+    bool soundStarted;
   };
 
   class SupplyManager: public gf::Entity {
