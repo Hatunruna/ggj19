@@ -10,7 +10,7 @@ namespace home {
     public :
     ResourcesHud();
       virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-      virtual void update(gf::Time time) override;
+      //virtual void update(gf::Time time) override;
     private :
       int m_minerals;
       float m_energy;

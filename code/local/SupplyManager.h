@@ -14,6 +14,8 @@
 namespace home {
   enum class SupplyType {
     Metal,
+    Oxygen,
+    Energy,
   };
 
   struct Supply {

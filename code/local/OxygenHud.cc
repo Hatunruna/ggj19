@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 4.0f;
+  static constexpr float OxygenLoss = 0.5f;
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -21,6 +21,7 @@ namespace home {
   , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
   , m_lowO2Volume(0.0f)
   , m_lowO2SoundStarted(false) {
+    gMessageManager().registerHandler<HarvestResource>(&OxygenHud::onOxygenHarvested, this);    
     m_lowO2Sound.setLoop(true);
     m_lowO2Sound.setVolume(m_lowO2Volume);
   }
@@ -41,7 +42,6 @@ namespace home {
     gf::Coordinates coordinates(target);
 
     oxygenIcon.setTexture(m_oxygenIcon);
-    //gf::Log::debug("relative size y %f\n", coordinates.getRelativeSize({1, 1}).y);
     oxygenIcon.setScale(coordinates.getRelativeSize({1, 1}).y / scale);
     oxygenIcon.setAnchor(gf::Anchor::CenterRight);
     oxygenIcon.setPosition(coordinates.getRelativeSize({OxygenPosition.x - OffsetIcon, OxygenPosition.y}));
@@ -72,7 +72,7 @@ namespace home {
       m_oxygen -= time.asSeconds() * OxygenLoss;
     }
 
-    if (m_oxygen <= LowO2Limit) {
+    if (m_oxygen <= LowO2Limit && m_oxygen > 0) {
       m_lowO2Volume = 100.0f - m_oxygen * 3.0f;
       m_lowO2Sound.setVolume(m_lowO2Volume);
       if (!m_lowO2SoundStarted) {
@@ -84,5 +84,18 @@ namespace home {
       m_lowO2SoundStarted = false;
       m_lowO2Sound.stop();
     }
+  }
+
+  gf::MessageStatus OxygenHud::onOxygenHarvested(gf::Id id, gf::Message *msg) {
+    assert(id == HarvestResource::type);
+    HarvestResource *message = static_cast<HarvestResource*>(msg);
+    if (message->resourceType == SupplyType::Oxygen && m_oxygen < MaxOxygen) {
+      if (message->quantity + m_oxygen > MaxOxygen) {
+        m_oxygen = MaxOxygen;
+      } else {
+        m_oxygen += message->quantity;
+      }
+    }
+    return gf::MessageStatus::Keep;
   }
 }

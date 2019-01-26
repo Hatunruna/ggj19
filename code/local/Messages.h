@@ -35,7 +35,6 @@ namespace home {
     SupplyType resourceType;
     float quantity;
   };
-
 }
 
 #endif // HOME_MESSAGES_H

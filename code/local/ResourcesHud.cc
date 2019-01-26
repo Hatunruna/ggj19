@@ -81,7 +81,10 @@ namespace home {
     target.draw(energyBackground, states);
     target.draw(energy, states);
   }
+  /*gf::MessageStatus Player::onResourceMined(gf::Id id, gf::Message *msg) {
+    assert(id == ResourceMined::type);
+    //m_positionClicked = static_cast<CursorClickedPosition*>(msg)->position;
 
-  void ResourcesHud::update(gf::Time time) {
-  }
+    return gf::MessageStatus::Keep;
+  }*/
 }
