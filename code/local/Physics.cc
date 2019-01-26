@@ -179,6 +179,8 @@ namespace home {
               base.y /= 2;
               base += tileSize / 2;
 
+              base.y -= tileSize.height / 2; // HACK
+
               for (auto& rel : NeighborsEven) {
                 gf::Vector2i neighbor = pos + rel.first;
 
@@ -203,6 +205,8 @@ namespace home {
               base.y /= 2;
               base.x += tileSize.width;
               base.y += tileSize.height / 2;
+
+              base.y -= tileSize.height / 2; // HACK
 
               for (auto& rel : NeighborsOdd) {
                 gf::Vector2i neighbor = pos + rel.first;

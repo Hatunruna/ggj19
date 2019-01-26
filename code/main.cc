@@ -137,7 +137,7 @@ int main() {
   home::PhysicsDebugger debugger(physics);
   home::PhysicsDraw draw(debugger);
 
-//   physics.setDraw(&draw);
+  physics.setDraw(&draw);
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
