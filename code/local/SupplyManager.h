@@ -54,6 +54,8 @@ namespace home {
 
     gf::MessageStatus onHeroPosition(gf::Id id, gf::Message *msg);
 
+    void addSupply(SupplyType type, gf::Vector2f position);
+
   private:
     std::vector<Supply> m_supplies;
     gf::Vector2f m_heroLocation;

@@ -125,19 +125,19 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  home::Map map(layers);
+  home::SupplyManager supplies;
+  home::Map map(layers, supplies);
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
   home::OxygenHud oxygenHud;
   home::ResourcesHud resourcesHud;
-  home::SupplyManager supplies;
 
   home::Physics physics(layers, player);
   home::PhysicsDebugger debugger(physics);
   home::PhysicsDraw draw(debugger);
 
-  physics.setDraw(&draw);
+//   physics.setDraw(&draw);
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities

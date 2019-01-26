@@ -17,4 +17,8 @@ montage raw/west/move/*.png \
         raw/south_east/pause/*.png \
         raw/south_west/pause/*.png \
         raw/south/*.png \
-        -background none -tile 22x15 -geometry 256x256+0  png32:move_pause_animation.png
+        raw/north_west/harvest/*.png \
+        raw/north_east/harvest/*.png \
+        raw/south_east/harvest/*.png \
+        raw/south_west/harvest/*.png \
+        -background none -tile 22x19 -geometry 256x256+0  png32:player_animations.png

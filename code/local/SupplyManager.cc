@@ -101,6 +101,10 @@ namespace home {
     }
   }
 
+  void SupplyManager::addSupply(SupplyType type, gf::Vector2f position) {
+    // TODO: @ahugeat
+  }
+
   gf::MessageStatus SupplyManager::onHeroPosition(gf::Id id, gf::Message *msg) {
     assert(id == HeroPosition::type);
     auto location = static_cast<HeroPosition*>(msg);
