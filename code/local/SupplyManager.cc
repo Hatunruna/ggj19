@@ -14,7 +14,7 @@ namespace home {
 
   static constexpr float HarvestSpeed = 100.0f; // 100 unit / sec;
   static constexpr float HarvestQuantity = 1000.0f;
-  static constexpr float OxygenHarvestSpeed = 4.0f; // 4 unit / sec;
+  static constexpr float OxygenHarvestSpeed = 6.0f; // 6 unit / sec;
   static constexpr float OxygenQuantity = 10.0f;
 
   SupplyManager::SupplyManager()
