@@ -25,6 +25,7 @@ add_executable(home
   code/local/ClockHud.cc
   code/local/FieldOfView.cc
   code/local/Map.cc
+  code/local/Physics.cc
   code/local/Player.cc
   code/local/ResourceManager.cc
   code/local/ResourcesViewer.cc

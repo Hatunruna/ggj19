@@ -16,6 +16,7 @@
 #include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
+#include "local/Physics.h"
 #include "local/Player.h"
 #include "local/ResourcesViewer.h"
 #include "local/Singletons.h"
@@ -24,14 +25,14 @@
 
 int main() {
   static constexpr gf::Vector2u ScreenSize(1024, 576);
-  static constexpr gf::Vector2f ViewSize(800.0f, 800.0f); // dummy values
-  static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f); // dummy values
+  static constexpr gf::Vector2f ViewSize(800.0f, 800.0f);
+  static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
 
   // initialization
 
-  gf::Window window("Game", ScreenSize);
+  gf::Window window("H.O.M.E. - Harvest Oxygen in the Maldoran Ecosystem", ScreenSize);
   window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
 
@@ -141,6 +142,8 @@ int main() {
   // add entities to hudEntities
   hudEntities.addEntity(clockHud);
   hudEntities.addEntity(rviewer);
+
+  home::Physics physics(layers);
 
   // game loop
 
