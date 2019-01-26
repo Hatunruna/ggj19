@@ -1,13 +1,13 @@
-#ifndef HOME_RESOURCESVIEWER_H
-#define HOME_RESOURCESVIEWER_H
+#ifndef HOME_OXYGENHUD_H
+#define HOME_OXYGENHUD_H
 
 #include <gf/Entity.h>
 #include <gf/Texture.h>
 
 namespace home {
-  class ResourcesViewer : public gf::Entity {
+  class OxygenHud : public gf::Entity {
     public :
-      ResourcesViewer();
+    OxygenHud();
       virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
       virtual void update(gf::Time time) override;
     private :
@@ -16,4 +16,4 @@ namespace home {
   };
 }
 
-#endif // HOME_RESOURCESVIEWER_H
+#endif // HOME_OXYGENHUD_H

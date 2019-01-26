@@ -16,8 +16,9 @@
 #include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
+#include "local/OxygenHud.h"
 #include "local/Player.h"
-#include "local/ResourcesViewer.h"
+#include "local/ResourcesHud.h"
 #include "local/Singletons.h"
 #include "config.h"
 
@@ -119,7 +120,8 @@ int main() {
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
-  home::ResourcesViewer rviewer;
+  home::OxygenHud oxygenHud;
+  home::ResourcesHud resourcesHud;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
@@ -130,7 +132,8 @@ int main() {
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
   hudEntities.addEntity(clockHud);
-  hudEntities.addEntity(rviewer);
+  hudEntities.addEntity(oxygenHud);
+  hudEntities.addEntity(resourcesHud);
 
   // game loop
 
