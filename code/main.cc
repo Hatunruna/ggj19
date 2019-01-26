@@ -19,6 +19,7 @@
 #include "local/Player.h"
 #include "local/ResourcesViewer.h"
 #include "local/Singletons.h"
+#include "local/SupplyManager.h"
 #include "config.h"
 
 int main() {
@@ -120,12 +121,14 @@ int main() {
   home::Player player;
   home::ClockHud clockHud;
   home::ResourcesViewer rviewer;
+  home::SupplyManager supplies;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
   mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
+  mainEntities.addEntity(supplies);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
