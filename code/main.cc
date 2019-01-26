@@ -17,6 +17,7 @@
 #include "local/Map.h"
 #include "local/Messages.h"
 #include "local/OxygenHud.h"
+#include "local/Physics.h"
 #include "local/Player.h"
 #include "local/ResourcesHud.h"
 #include "local/Singletons.h"
@@ -25,14 +26,14 @@
 
 int main() {
   static constexpr gf::Vector2u ScreenSize(1024, 576);
-  static constexpr gf::Vector2f ViewSize(800.0f, 800.0f); // dummy values
-  static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f); // dummy values
+  static constexpr gf::Vector2f ViewSize(800.0f, 800.0f);
+  static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
 
   // initialization
 
-  gf::Window window("Game", ScreenSize);
+  gf::Window window("H.O.M.E. - Harvest Oxygen in the Maldoran Ecosystem", ScreenSize);
   window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
 
@@ -41,7 +42,6 @@ int main() {
   // singletons
 
   gf::SingletonStorage<home::ResourceManager> storageForResourceManager(home::gResourceManager);
-  gf::Log::debug("data dir: %s\n", HOME_DATA_DIR);
   home::gResourceManager().addSearchDir(HOME_DATA_DIR);
 
   gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
@@ -117,7 +117,15 @@ int main() {
   actions.addAction(volumeDownAction);
 
   // entities
-  home::Map map;
+
+  gf::Path filename = home::gResourceManager().getAbsolutePath("map/Map.tmx");
+  gf::TmxLayers layers;
+  if (!layers.loadFromFile(filename)) {
+    gf::Log::error("Unable to load the map!\n");
+    return EXIT_FAILURE;
+  }
+
+  home::Map map(layers);
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
@@ -137,6 +145,8 @@ int main() {
   hudEntities.addEntity(clockHud);
   hudEntities.addEntity(oxygenHud);
   hudEntities.addEntity(resourcesHud);
+
+  home::Physics physics(layers);
 
   // game loop
 
