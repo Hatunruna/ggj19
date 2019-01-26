@@ -37,5 +37,4 @@ namespace home {
   sf::Music& ResourceManager::getMusic(const gf::Path &path) {
     return m_musics.getResource(*this, path);
   }
-
 }

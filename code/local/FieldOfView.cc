@@ -15,7 +15,8 @@ namespace home {
   static constexpr float PeriodTransitionDuration = 1.0f; // 1 hour in game
 
   FieldOfView::FieldOfView()
-  : m_texture(gResourceManager().getTexture("images/fov.png"))
+  : gf::Entity(400)
+  , m_texture(gResourceManager().getTexture("images/fov.png"))
   , m_position({0.0f, 0.0f})
   , m_inGameTime(StartDawn + PeriodTransitionDuration)
   , m_alpha(gf::Color::Opaque(0.0f))

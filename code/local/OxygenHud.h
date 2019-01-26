@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 
 #include <gf/Entity.h>
+#include <gf/Font.h>
 #include <gf/Texture.h>
 
 
@@ -22,6 +23,8 @@ namespace home {
       sf::Sound m_lowO2Sound;
       float m_lowO2Volume;
       bool m_lowO2SoundStarted;
+      bool m_gameOver;
+      gf::Font &m_font;
   };
 }
 

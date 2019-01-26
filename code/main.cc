@@ -125,19 +125,19 @@ int main() {
     return EXIT_FAILURE;
   }
 
-  home::Map map(layers);
+  home::SupplyManager supplies;
+  home::Map map(layers, supplies);
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
   home::OxygenHud oxygenHud;
   home::ResourcesHud resourcesHud;
-  home::SupplyManager supplies;
 
   home::Physics physics(layers, player);
   home::PhysicsDebugger debugger(physics);
   home::PhysicsDraw draw(debugger);
 
-  physics.setDraw(&draw);
+//   physics.setDraw(&draw);
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
@@ -163,6 +163,13 @@ int main() {
     mainView.setCenter(positionHeroMessage->position);
     return gf::MessageStatus::Keep;
   });
+  
+  bool isGameOver = false;
+  home::gMessageManager().registerHandler<home::GameOver>([&isGameOver](gf::Id type, gf::Message *msg) {
+    assert(type == home::GameOver::type);
+    isGameOver = true;
+    return gf::MessageStatus::Keep;
+  });
 
   renderer.clear(gf::Color::Gray(0.2f));
 
@@ -176,23 +183,25 @@ int main() {
     while (window.pollEvent(event)) {
       actions.processEvent(event);
       views.processEvent(event);
-      switch (event.type) {
-        case gf::EventType::MouseMoved:
-        {
-          auto mapCoord = renderer.mapPixelToCoords(event.mouseCursor.coords, mainView);
-          home::CursorMovedPosition pos;
-          pos.position = mapCoord;
-          home::gMessageManager().sendMessage(&pos);
-          break;
+      if (!isGameOver) {
+        switch (event.type) {
+          case gf::EventType::MouseMoved:
+          {
+            auto mapCoord = renderer.mapPixelToCoords(event.mouseCursor.coords, mainView);
+            home::CursorMovedPosition pos;
+            pos.position = mapCoord;
+            home::gMessageManager().sendMessage(&pos);
+            break;
+          }
+          case gf::EventType::MouseButtonReleased:
+          {
+            auto coord = renderer.mapPixelToCoords(event.mouseButton.coords, mainView);
+            home::CursorClickedPosition pos;
+            pos.position = coord;
+            home::gMessageManager().sendMessage(&pos);break;
+          }
+          default:break;
         }
-        case gf::EventType::MouseButtonReleased:
-        {
-          auto coord = renderer.mapPixelToCoords(event.mouseButton.coords, mainView);
-          home::CursorClickedPosition pos;
-          pos.position = coord;
-          home::gMessageManager().sendMessage(&pos);break;
-        }
-        default:break;
       }
     }
 

@@ -90,13 +90,6 @@ namespace home {
   }
 
   void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    gf::CircleShape player;
-    player.setColor(gf::Color::Blue);
-    player.setRadius(Radius);
-    player.setPosition(m_position);
-    player.setAnchor(gf::Anchor::Center);
-    target.draw(player, states);
-
     gf::AnimatedSprite sprite;
     sprite.setAnimation(*m_currentAnimation);
     sprite.setScale(0.75f);
