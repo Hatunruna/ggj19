@@ -131,19 +131,26 @@ int main() {
   home::ResourcesViewer rviewer;
   home::SupplyManager supplies;
 
+  home::Physics physics(layers, player);
+  home::PhysicsDebugger debugger(physics);
+  home::PhysicsDraw draw(debugger);
+
+  physics.setDraw(&draw);
+
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
   mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
   mainEntities.addEntity(supplies);
+  mainEntities.addEntity(debugger);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
   hudEntities.addEntity(clockHud);
   hudEntities.addEntity(rviewer);
 
-  home::Physics physics(layers);
+
 
   // game loop
 
@@ -233,6 +240,7 @@ int main() {
     gf::Time time = clock.restart();
     mainEntities.update(time);
     hudEntities.update(time);
+    physics.update(time);
 
 
     // 3. draw
