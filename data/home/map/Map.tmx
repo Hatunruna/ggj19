@@ -37,7 +37,7 @@
   <object id="33" gid="37" x="8581.45" y="7460.97" width="384" height="384"/>
   <object id="34" gid="37" x="9420.85" y="6003.39" width="384" height="384"/>
   <object id="35" gid="37" x="10948.1" y="5582.18" width="384" height="384"/>
-  <object id="36" gid="37" x="9769.33" y="4297.33" width="384" height="384"/>
+  <object id="36" gid="37" x="9296.6" y="4170.06" width="384" height="384"/>
   <object id="37" gid="37" x="9408.73" y="2936.73" width="384" height="384"/>
   <object id="38" gid="37" x="7493.58" y="2257.94" width="384" height="384"/>
   <object id="39" gid="37" x="9163.27" y="851.879" width="384" height="384"/>
@@ -149,13 +149,13 @@
   <object id="146" gid="73" x="4996" y="2130" width="128" height="128"/>
   <object id="147" gid="73" x="6098" y="2336" width="128" height="128"/>
   <object id="148" gid="73" x="6182" y="2756" width="128" height="128"/>
-  <object id="149" gid="73" x="4624" y="3100" width="128" height="128"/>
-  <object id="150" gid="73" x="5518" y="2216" width="128" height="128"/>
-  <object id="151" gid="73" x="5640" y="3224" width="128" height="128"/>
+  <object id="149" gid="73" x="4772" y="3130" width="128" height="128"/>
+  <object id="150" gid="73" x="5446" y="2282" width="128" height="128"/>
+  <object id="151" gid="73" x="5814" y="3334" width="128" height="128"/>
   <object id="152" gid="73" x="5056" y="4312" width="128" height="128"/>
   <object id="153" gid="73" x="6088" y="3936" width="128" height="128"/>
   <object id="154" gid="73" x="7024" y="3680" width="128" height="128"/>
-  <object id="155" gid="73" x="5192" y="5440" width="128" height="128"/>
+  <object id="155" gid="73" x="5496" y="5664" width="128" height="128"/>
   <object id="156" gid="73" x="7040" y="4680" width="128" height="128"/>
   <object id="157" gid="73" x="8352" y="3264" width="128" height="128"/>
   <object id="158" gid="73" x="7696" y="1496" width="128" height="128"/>
@@ -179,7 +179,7 @@
   <object id="176" gid="72" x="8848" y="6696" width="128" height="128"/>
   <object id="184" gid="71" x="5544" y="7820" width="128" height="128"/>
   <object id="185" gid="71" x="3796" y="6892" width="128" height="128"/>
-  <object id="186" gid="71" x="3108" y="5556" width="128" height="128"/>
+  <object id="186" gid="71" x="3377.33" y="5526.67" width="128" height="128"/>
   <object id="187" gid="71" x="7176" y="7116" width="128" height="128"/>
   <object id="188" gid="71" x="9196" y="7628" width="128" height="128"/>
   <object id="189" gid="71" x="10720" y="6056" width="128" height="128"/>
