@@ -11,7 +11,7 @@
 
 namespace home {
   static constexpr gf::Vector2i TileSize = {128, 64};
-  static constexpr float OxygenHarvestSpeed = 2.0f; // 12 unit / sec;
+  static constexpr float OxygenHarvestSpeed = 4.0f; // 12 unit / sec;
 
   SupplyManager::SupplyManager()
   : m_heroLocation({0.0f, 0.0f}){
@@ -61,7 +61,18 @@ namespace home {
       // Ressource sprite
       gf::RectangleShape rectangle;
       rectangle.setSize(TileSize);
-      rectangle.setColor(gf::Color::Red);
+      switch (supply.type)
+      {
+        case SupplyType::Metal:
+          rectangle.setColor(gf::Color::Gray(0.75f));
+          break;
+        case SupplyType::Oxygen:
+          rectangle.setColor(gf::Color::Blue);
+          break;
+        default:
+          rectangle.setColor(gf::Color::Yellow);
+          break;
+      }
       rectangle.setPosition(TileSize * supply.position);
       rectangle.setAnchor(gf::Anchor::Center);
       target.draw(rectangle, states);

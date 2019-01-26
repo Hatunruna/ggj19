@@ -123,10 +123,10 @@ namespace home {
       m_moving = false;
     }
 
-    if (length > 0.0f && !m_wasJetSound) {
+    if (length > 0.1f && !m_wasJetSound) {
       m_wasJetSound = true;
       m_jetSound.play();
-    } else if (length <= 0.0f && m_wasJetSound) {
+    } else if (length <= 0.1f && m_wasJetSound) {
       m_jetSound.stop();
       m_wasJetSound = false;
     }
