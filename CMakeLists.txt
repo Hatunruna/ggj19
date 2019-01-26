@@ -19,6 +19,7 @@ endif()
 
 add_executable(home
   code/main.cc
+  code/local/FieldOfView.cc
   code/local/Map.cc
   code/local/Player.cc
   code/local/ResourceManager.cc

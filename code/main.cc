@@ -12,6 +12,7 @@
 
 #include <SFML/Audio.hpp>
 
+#include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
 #include "local/Player.h"
@@ -34,6 +35,7 @@ int main() {
   // singletons
 
   gf::SingletonStorage<home::ResourceManager> storageForResourceManager(home::gResourceManager);
+  gf::Log::debug("data dir: %s\n", HOME_DATA_DIR);
   home::gResourceManager().addSearchDir(HOME_DATA_DIR);
 
   gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
@@ -96,11 +98,13 @@ int main() {
 
   // entities
   home::Map map;
+  home::FieldOfView fov;
   home::Player player;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
   mainEntities.addEntity(map);
+  mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
 
   gf::EntityContainer hudEntities;
