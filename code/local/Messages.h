@@ -22,6 +22,12 @@ namespace home {
     gf::Vector2f position;
   };
 
+  struct ClockInfo: public gf::Message {
+    static const gf::Id type = "ClockInfo"_id; // compile-time definition
+    float time;
+    int nbDays;
+  };
+
 }
 
 #endif // HOME_MESSAGES_H

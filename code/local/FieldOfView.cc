@@ -17,17 +17,15 @@ namespace home {
   FieldOfView::FieldOfView()
   : m_texture(gResourceManager().getTexture("images/fov.png"))
   , m_position({0.0f, 0.0f})
-  , m_inGameTime(StartDawn)
-  , m_alpha(gf::Color::Opaque(1.0f))
+  , m_inGameTime(StartDawn + PeriodTransitionDuration)
+  , m_alpha(gf::Color::Opaque(0.0f))
   , m_numberDays(1) {
     gMessageManager().registerHandler<HeroPosition>(&FieldOfView::onHeroPosition, this);
   }
 
   void FieldOfView::update(gf::Time time) {
     m_inGameTime += time.asSeconds() * TimeFactor;
-  }
 
-  void FieldOfView::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     // Compute the right alpha
     if (m_inGameTime >= StartDusk && m_inGameTime <= StartDusk + PeriodTransitionDuration) {
       float elapsedTime = m_inGameTime - StartDusk;
@@ -42,6 +40,14 @@ namespace home {
       m_numberDays += 1;
     }
 
+    // Send clock info
+    ClockInfo info;
+    info.time = m_inGameTime;
+    info.nbDays = m_numberDays;
+    gMessageManager().sendMessage(&info);
+  }
+
+  void FieldOfView::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     gf::Sprite fov;
     fov.setTexture(m_texture);
     fov.setAnchor(gf::Anchor::Center);
