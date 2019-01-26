@@ -61,10 +61,10 @@ int main() {
 
   // background music
   float bgmVol = 10.0f;
-  bool bgmMuted = false;
+  bool bgmMuted = true;
   sf::Sound bgm(home::gResourceManager().getSound("sounds/main_theme.ogg"));
   bgm.setLoop(true);
-  bgm.setVolume(bgmVol);
+  bgm.setVolume(0.0f);
   bgm.play();
 
   // actions
