@@ -1,6 +1,8 @@
 #ifndef HOME_PLAYER_H
 #define HOME_PLAYER_H
 
+#include <SFML/Audio.hpp>
+
 #include <gf/Entity.h>
 #include "Messages.h"
 
@@ -15,6 +17,9 @@ namespace home {
     private :
       gf::Vector2f m_position; // Current position of the player
       gf::Vector2f m_positionClicked; // Where the mouse was last clicked
+
+      sf::Sound m_jetSound;
+      bool m_wasJetSound;
   };
 }
 
