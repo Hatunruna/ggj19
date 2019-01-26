@@ -10,21 +10,30 @@
 #include "Singletons.h"
 
 namespace home {
-  static constexpr gf::Vector2i TileSize = {128, 64};
-  static constexpr float OxygenHarvestSpeed = 4.0f; // 12 unit / sec;
+  static constexpr gf::Vector2i TileSize = {128, 128};
+
+  static constexpr float HarvestSpeed = 100.0f; // 100 unit / sec;
+  static constexpr float HarvestQuantity = 1000.0f;
+  static constexpr float OxygenHarvestSpeed = 4.0f; // 4 unit / sec;
+  static constexpr float OxygenQuantity = 10.0f;
 
   SupplyManager::SupplyManager()
   : m_heroLocation({0.0f, 0.0f}){
-    m_supplies.push_back({SupplyType::Metal, 10.0f, {41, 96}});
-
     gMessageManager().registerHandler<HeroPosition>(&SupplyManager::onHeroPosition, this);
   }
 
   void SupplyManager::update(gf::Time time) {
     for (auto &supply: m_supplies) {
-      gf::RectF rect(TileSize * supply.position - TileSize * 0.5f, TileSize);
+      gf::RectF rect(supply.position - TileSize * 0.5f, TileSize);
       if (rect.contains(m_heroLocation)) {
-        float quantity = OxygenHarvestSpeed * time.asSeconds();
+        float quantity = 0.0f;
+
+        if (supply.type == SupplyType::Oxygen) {
+          quantity = OxygenHarvestSpeed * time.asSeconds();
+        } else {
+          quantity = HarvestSpeed * time.asSeconds();
+        }
+
         if (supply.quantity - quantity < 0.0f) {
           quantity = supply.quantity;
         }
@@ -58,39 +67,20 @@ namespace home {
     gf::Coordinates coordinates(target);
 
     for (auto &supply: m_supplies) {
-      // Ressource sprite
-      gf::RectangleShape rectangle;
-      rectangle.setSize(TileSize);
-      switch (supply.type)
-      {
-        case SupplyType::Metal:
-          rectangle.setColor(gf::Color::Gray(0.75f));
-          break;
-        case SupplyType::Oxygen:
-          rectangle.setColor(gf::Color::Blue);
-          break;
-        default:
-          rectangle.setColor(gf::Color::Yellow);
-          break;
-      }
-      rectangle.setPosition(TileSize * supply.position);
-      rectangle.setAnchor(gf::Anchor::Center);
-      target.draw(rectangle, states);
-
       // Life bar of supply
       float life = supply.quantity / supply.initialQuantity;
       if (life < 1.0f) {
-        gf::Vector2f pos = TileSize * supply.position - TileSize * 0.5f;
-        pos.y -= TileSize.y * 0.5f;
-        rectangle.setSize({static_cast<float>(TileSize.width), coordinates.getRelativeSize({1.0f, 0.01f}).height});
-        rectangle.setColor(gf::Color::White);
-        rectangle.setOutlineColor(gf::Color::Black);
-        rectangle.setOutlineThickness(coordinates.getRelativeSize({1.0f, 0.002f}).height);
-        rectangle.setPosition(pos);
-        rectangle.setAnchor(gf::Anchor::TopLeft);
-        target.draw(rectangle, states);
-
+        gf::Vector2f pos = supply.position - TileSize * 0.5f;
         gf::RectangleShape bar;
+        pos.y -= TileSize.y * 0.5f;
+        bar.setSize({static_cast<float>(TileSize.width), coordinates.getRelativeSize({1.0f, 0.01f}).height});
+        bar.setColor(gf::Color::White);
+        bar.setOutlineColor(gf::Color::Black);
+        bar.setOutlineThickness(coordinates.getRelativeSize({1.0f, 0.002f}).height);
+        bar.setPosition(pos);
+        bar.setAnchor(gf::Anchor::TopLeft);
+        target.draw(bar, states);
+
         bar.setSize({TileSize.width * life, coordinates.getRelativeSize({1.0f, 0.01f}).height});
         bar.setColor(gf::Color::Green);
         bar.setPosition(pos);
@@ -101,7 +91,11 @@ namespace home {
   }
 
   void SupplyManager::addSupply(SupplyType type, gf::Vector2f position) {
-    // TODO: @ahugeat
+    if (type == SupplyType::Oxygen) {
+      m_supplies.push_back({type, OxygenQuantity, position});
+    } else {
+      m_supplies.push_back({type, HarvestQuantity, position});
+    }
   }
 
   gf::MessageStatus SupplyManager::onHeroPosition(gf::Id id, gf::Message *msg) {

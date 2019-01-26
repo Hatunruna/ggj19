@@ -19,18 +19,18 @@ namespace home {
   };
 
   struct Supply {
-    Supply(SupplyType _type, float _quantity, gf::Vector2i _position)
-    : type(_type)
-    , initialQuantity(_quantity)
-    , quantity(_quantity)
-    , position(_position)
+    Supply(SupplyType type, float quantity, gf::Vector2f position)
+    : type(type)
+    , initialQuantity(quantity)
+    , quantity(quantity)
+    , position(position)
     , soundStarted(false) {
       switch (type) {
-        case SupplyType::Metal:
-          miningSound.setBuffer(gResourceManager().getSound("sounds/mining.ogg"));
+        case SupplyType::Oxygen:
+          miningSound.setBuffer(gResourceManager().getSound("sounds/o2_filling.ogg"));
           break;
         default:
-          miningSound.setBuffer(gResourceManager().getSound("sounds/o2_filling.ogg"));
+          miningSound.setBuffer(gResourceManager().getSound("sounds/mining.ogg"));
           break;
       }
       miningSound.setLoop(true);
@@ -40,7 +40,7 @@ namespace home {
     SupplyType type;
     float initialQuantity;
     float quantity;
-    gf::Vector2i position;
+    gf::Vector2f position;
     sf::Sound miningSound;
     bool soundStarted;
   };
