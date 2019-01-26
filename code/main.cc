@@ -113,6 +113,13 @@ int main() {
 
   // game loop
 
+  home::gMessageManager().registerHandler<home::HeroPosition>([&mainView](gf::Id type, gf::Message *msg) {
+    assert(type == home::HeroPosition::type);
+    auto positionHeroMessage = static_cast<home::HeroPosition*>(msg);
+    mainView.setCenter(positionHeroMessage->position);
+    return gf::MessageStatus::Keep;
+  });
+
   renderer.clear(gf::Color::White);
 
   gf::Clock clock;
