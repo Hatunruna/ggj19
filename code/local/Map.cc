@@ -11,16 +11,6 @@ namespace home {
 
   namespace {
 
-    gf::Vector2u getMapSize(const gf::Path& path) {
-      gf::Path filename = gResourceManager().getAbsolutePath(path);
-      gf::TmxLayers layers;
-
-      bool present = layers.loadFromFile(filename);
-      assert(present);
-
-      return layers.mapSize;
-    }
-
     class LayersMaker : public gf::TmxVisitor {
     public:
       LayersMaker(gf::TileLayer& layer)
@@ -75,19 +65,11 @@ namespace home {
     private:
       gf::TileLayer& m_layer;
     };
-
-    constexpr const char *MapName = "map/Map.tmx";
   }
 
-  Map::Map()
-  : m_layer(getMapSize(MapName), gf::TileLayer::Staggered)
+  Map::Map(const gf::TmxLayers& layers)
+  : m_layer(layers.mapSize, gf::TileLayer::Staggered)
   {
-    gf::Path filename = gResourceManager().getAbsolutePath(MapName);
-    gf::TmxLayers layers;
-
-    bool present = layers.loadFromFile(filename);
-    assert(present);
-
     LayersMaker maker(m_layer);
     layers.visitLayers(maker);
 

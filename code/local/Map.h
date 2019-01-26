@@ -3,13 +3,14 @@
 
 #include <gf/Entity.h>
 #include <gf/TileLayer.h>
+#include <gf/Tmx.h>
 
 #include "Messages.h"
 
 namespace home {
   class Map : public gf::Entity {
   public :
-    Map();
+    Map(const gf::TmxLayers& layers);
 
     virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 

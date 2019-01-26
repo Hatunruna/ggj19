@@ -40,7 +40,6 @@ int main() {
   // singletons
 
   gf::SingletonStorage<home::ResourceManager> storageForResourceManager(home::gResourceManager);
-  gf::Log::debug("data dir: %s\n", HOME_DATA_DIR);
   home::gResourceManager().addSearchDir(HOME_DATA_DIR);
 
   gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
@@ -116,7 +115,15 @@ int main() {
   actions.addAction(volumeDownAction);
 
   // entities
-  home::Map map;
+
+  gf::Path filename = home::gResourceManager().getAbsolutePath("map/Map.tmx");
+  gf::TmxLayers layers;
+  if (!layers.loadFromFile(filename)) {
+    gf::Log::error("Unable to load the map!\n");
+    return EXIT_FAILURE;
+  }
+
+  home::Map map(layers);
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
