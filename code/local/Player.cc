@@ -13,7 +13,8 @@ namespace home {
   static constexpr gf::Vector2f TileSize = {128, 64};
 
   Player::Player()
-  : m_position(TileSize * gf::Vector2f(41.0f, 91.0f))
+  : gf::Entity(100)
+  , m_position(TileSize * gf::Vector2f(41.0f, 91.0f))
   , m_positionClicked(TileSize * gf::Vector2f(41.0f, 91.0f))
   , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
   , m_wasJetSound(false){

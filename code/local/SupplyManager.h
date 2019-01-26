@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <gf/Entity.h>
+#include <gf/Message.h>
 #include <gf/Vector.h>
 
 namespace home {
@@ -21,10 +22,14 @@ namespace home {
   public:
     SupplyManager();
 
+    virtual void update(gf::Time time) override;
     virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+
+    gf::MessageStatus onHeroPosition(gf::Id id, gf::Message *msg);
 
   private:
     std::vector<Supply> m_supplies;
+    gf::Vector2f m_heroLocation;
   };
 }
 
