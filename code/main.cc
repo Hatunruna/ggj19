@@ -17,6 +17,7 @@
 #include "local/Map.h"
 #include "local/Messages.h"
 #include "local/Player.h"
+#include "local/ResourcesViewer.h"
 #include "local/Singletons.h"
 #include "config.h"
 
@@ -24,6 +25,8 @@ int main() {
   static constexpr gf::Vector2u ScreenSize(1024, 576);
   static constexpr gf::Vector2f ViewSize(800.0f, 800.0f); // dummy values
   static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f); // dummy values
+
+  static constexpr float MaxVol = 100.0f;
 
   // initialization
 
@@ -55,9 +58,11 @@ int main() {
   views.setInitialScreenSize(ScreenSize);
 
   // background music
+  float bgmVol = 10.0f;
+  bool bgmMuted = false;
   sf::Sound bgm(home::gResourceManager().getSound("sounds/main_theme.ogg"));
   bgm.setLoop(true);
-  bgm.setVolume(10);
+  bgm.setVolume(bgmVol);
   bgm.play();
 
   // actions
@@ -97,11 +102,24 @@ int main() {
   downAction.setContinuous();
   actions.addAction(downAction);
 
+  gf::Action muteBgmAction("Mute");
+  muteBgmAction.addKeycodeKeyControl(gf::Keycode::M);
+  actions.addAction(muteBgmAction);
+
+  gf::Action volumeUpAction("VolUp");
+  volumeUpAction.addKeycodeKeyControl(gf::Keycode::O);
+  actions.addAction(volumeUpAction);
+
+  gf::Action volumeDownAction("VolDown");
+  volumeDownAction.addKeycodeKeyControl(gf::Keycode::L);
+  actions.addAction(volumeDownAction);
+
   // entities
   home::Map map;
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
+  home::ResourcesViewer rviewer;
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
@@ -112,7 +130,7 @@ int main() {
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
   hudEntities.addEntity(clockHud);
-
+  hudEntities.addEntity(rviewer);
 
   // game loop
 
@@ -175,6 +193,27 @@ int main() {
       // do something
     }
 
+    // Sound control
+    if (muteBgmAction.isActive()) {
+      bgmMuted = !bgmMuted;
+      if (bgmMuted) {
+        bgm.setVolume(0.0f);
+      } else {
+        bgm.setVolume(bgmVol);
+      }
+    }
+    if (volumeUpAction.isActive()) {
+      bgmVol = bgmVol >= MaxVol ? MaxVol : bgmVol + 5.0f;
+      if (!bgmMuted) {
+        bgm.setVolume(bgmVol);
+      }
+    }
+    if (volumeDownAction.isActive()) {
+      bgmVol = bgmVol <= 0.0f ? 0.0f : bgmVol - 5.0f;
+      if (!bgmMuted) {
+        bgm.setVolume(bgmVol);
+      }
+    }
 
     // 2. update
 

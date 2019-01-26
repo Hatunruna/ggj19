@@ -25,6 +25,7 @@ add_executable(home
   code/local/Player.cc
   code/local/ResourceManager.cc
   code/local/Singletons.cc
+  code/local/ResourcesViewer.cc
 )
 
 target_include_directories(home

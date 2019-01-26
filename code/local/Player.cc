@@ -13,7 +13,7 @@ namespace home {
 
   Player::Player()
   : m_position({0.0f, 0.0f})
-  , m_positionClicked({0.0f, 0.0f}) {
+  , m_positionClicked({0.0f, 0.0f}){
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
   }
 
@@ -48,7 +48,6 @@ namespace home {
     // store mouse coordinates
     m_positionClicked = static_cast<CursorClickedPosition*>(msg)->position;
 
-    // gf::Log::debug("message position: %f, %f\n", message->position.x, message->position.y);
     return gf::MessageStatus::Keep;
   }
 }
