@@ -17,7 +17,7 @@ namespace home {
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
   : m_oxygen(MaxOxygen)
-  , m_oxygenIcon(gResourceManager().getTexture("images/lungs.png"))
+  , m_oxygenIcon(gResourceManager().getTexture("images/oxygen_icon.png"))
   , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
   , m_lowO2Volume(0.0f)
   , m_lowO2SoundStarted(false) {
@@ -27,9 +27,9 @@ namespace home {
 
   void OxygenHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     // Size of the oxygen bar
-    static constexpr gf::Vector2f OxygenSize = {0.15f, 0.025f}; 
+    static constexpr gf::Vector2f OxygenSize = {0.15f, 0.025f};
     // Position of the oxygen bar
-    static constexpr gf::Vector2f OxygenPosition = {0.1f, 0.1f}; 
+    static constexpr gf::Vector2f OxygenPosition = {0.0f, 0.5f};
     // Offset of the icon (to the left)
     static constexpr float OffsetIcon = 0.01f;
     // Scale of the oxygen icon
@@ -45,7 +45,7 @@ namespace home {
     oxygenIcon.setScale(coordinates.getRelativeSize({1, 1}).y / scale);
     oxygenIcon.setAnchor(gf::Anchor::CenterRight);
     oxygenIcon.setPosition(coordinates.getRelativeSize({OxygenPosition.x - OffsetIcon, OxygenPosition.y}));
-    oxygenIcon.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});  
+    oxygenIcon.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});
 
     oxygenBackground.setColor(gf::Color::Black);
     oxygenBackground.setAnchor(gf::Anchor::TopLeft);
