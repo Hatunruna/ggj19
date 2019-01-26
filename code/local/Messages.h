@@ -7,8 +7,13 @@
 using namespace gf::literals;
 
 namespace home {
-  struct CursorPosition : public gf::Message {
-    static const gf::Id type = "CursorPosition"_id; // compile-time definition
+  struct CursorMovedPosition : public gf::Message {
+    static const gf::Id type = "CursorMovedPosition"_id; // compile-time definition
+    gf::Vector2f position;
+  };
+
+  struct CursorClickedPosition : public gf::Message {
+    static const gf::Id type = "CursorClickedPosition"_id; // compile-time definition
     gf::Vector2f position;
   };
 }

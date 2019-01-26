@@ -9,7 +9,7 @@ namespace home {
     public :
       Map();
       virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-      gf::MessageStatus onCursorPosition(gf::Id id, gf::Message *msg);
+      gf::MessageStatus onCursorMovedPosition(gf::Id id, gf::Message *msg);
   };
 }
 
