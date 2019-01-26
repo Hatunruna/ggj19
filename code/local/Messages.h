@@ -35,6 +35,12 @@ namespace home {
     SupplyType resourceType;
     float quantity;
   };
+
+  struct GameOver: public gf::Message {
+    static const gf::Id type = "GameOver"_id;
+    SupplyType resourceType;
+    float quantity;
+  };
 }
 
 #endif // HOME_MESSAGES_H

@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 1.8f;
+  static constexpr float OxygenLoss = 1.8f; // 1.8
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -20,7 +20,9 @@ namespace home {
   , m_oxygenIcon(gResourceManager().getTexture("images/oxygen_icon.png"))
   , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
   , m_lowO2Volume(0.0f)
-  , m_lowO2SoundStarted(false) {
+  , m_lowO2SoundStarted(false)
+  , m_gameOver(false) 
+  , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
     gMessageManager().registerHandler<HarvestResource>(&OxygenHud::onOxygenHarvested, this);    
     m_lowO2Sound.setLoop(true);
     m_lowO2Sound.setVolume(m_lowO2Volume);
@@ -36,31 +38,45 @@ namespace home {
     // Scale of the oxygen icon
     static constexpr float scale = 2000.0f;
 
-
-    gf::Sprite oxygenIcon; // Icons
-    gf::RectangleShape oxygenBackground, oxygen; // Oxygen bar
     gf::Coordinates coordinates(target);
+    if (!m_gameOver) {
+      gf::Sprite oxygenIcon; // Icons
+      gf::RectangleShape oxygenBackground, oxygen; // Oxygen bar
 
-    oxygenIcon.setTexture(m_oxygenIcon);
-    oxygenIcon.setScale(coordinates.getRelativeSize({1, 1}).y / scale);
-    oxygenIcon.setAnchor(gf::Anchor::CenterRight);
-    oxygenIcon.setPosition(coordinates.getRelativeSize({OxygenPosition.x - OffsetIcon, OxygenPosition.y}));
-    oxygenIcon.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});
+      oxygenIcon.setTexture(m_oxygenIcon);
+      oxygenIcon.setScale(coordinates.getRelativeSize({1, 1}).y / scale);
+      oxygenIcon.setAnchor(gf::Anchor::CenterRight);
+      oxygenIcon.setPosition(coordinates.getRelativeSize({OxygenPosition.x - OffsetIcon, OxygenPosition.y}));
+      oxygenIcon.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});
 
-    oxygenBackground.setColor(gf::Color::Black);
-    oxygenBackground.setAnchor(gf::Anchor::TopLeft);
-    oxygenBackground.setSize(coordinates.getRelativeSize(OxygenSize));
-    oxygenBackground.setPosition(coordinates.getRelativeSize(OxygenPosition));
-    oxygenBackground.setOutlineColor(gf::Color::Black);
-    oxygenBackground.setOutlineThickness(1.0f);
+      oxygenBackground.setColor(gf::Color::Black);
+      oxygenBackground.setAnchor(gf::Anchor::TopLeft);
+      oxygenBackground.setSize(coordinates.getRelativeSize(OxygenSize));
+      oxygenBackground.setPosition(coordinates.getRelativeSize(OxygenPosition));
+      oxygenBackground.setOutlineColor(gf::Color::Black);
+      oxygenBackground.setOutlineThickness(1.0f);
 
-    oxygen.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});
-    oxygen.setSize(coordinates.getRelativeSize({OxygenSize.x * m_oxygen / MaxOxygen, OxygenSize.y}));
-    oxygen.setPosition(coordinates.getRelativeSize({OxygenPosition.x, OxygenPosition.y}));
+      oxygen.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});
+      oxygen.setSize(coordinates.getRelativeSize({OxygenSize.x * m_oxygen / MaxOxygen, OxygenSize.y}));
+      oxygen.setPosition(coordinates.getRelativeSize({OxygenPosition.x, OxygenPosition.y}));
 
-    target.draw(oxygenIcon, states);
-    target.draw(oxygenBackground, states);
-    target.draw(oxygen, states);
+      target.draw(oxygenIcon, states);
+      target.draw(oxygenBackground, states);
+      target.draw(oxygen, states);
+    } else {
+      gf::Text text;
+
+      text.setFont(m_font);
+      text.setOutlineColor(gf::Color::White);
+      text.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
+      text.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
+      text.setString("Game Over");
+      text.setParagraphWidth(target.getSize().x);
+      text.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
+      text.setAlignment(gf::Alignment::Center);
+      text.setAnchor(gf::Anchor::Center);
+      target.draw(text, states);
+    }
   }
 
   void OxygenHud::update(gf::Time time) {
@@ -80,9 +96,15 @@ namespace home {
         m_lowO2Sound.play();
       }
     }
-    if (m_oxygen > LowO2Limit && m_lowO2SoundStarted) {
+    if ((m_oxygen > LowO2Limit || m_oxygen < 0) && m_lowO2SoundStarted) {
       m_lowO2SoundStarted = false;
       m_lowO2Sound.stop();
+    }
+
+    if (m_oxygen < 0) {
+      m_gameOver = true;
+      GameOver info;
+      gMessageManager().sendMessage(&info);
     }
   }
 

@@ -14,11 +14,11 @@ namespace home {
 
   static constexpr int MaxMinerals = 100;
   static constexpr float MaxEnergy = 100.0f;
-  
+
   ResourcesHud::ResourcesHud()
   : m_minerals(0)
   , m_energy(17.0f)
-  , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png")) 
+  , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_energyIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
     gMessageManager().registerHandler<HarvestResource>(&ResourcesHud::onResourceHarvested, this);
@@ -26,9 +26,9 @@ namespace home {
 
   void ResourcesHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     // Size of the oxygen bar
-    static constexpr gf::Vector2f EnergySize = {0.15f, 0.025f}; 
+    static constexpr gf::Vector2f EnergySize = {0.15f, 0.025f};
     // Position of the minerals hud
-    static constexpr gf::Vector2f MineralsPosition = {0.95f, 0.80f}; 
+    static constexpr gf::Vector2f MineralsPosition = {0.95f, 0.80f};
     // Offset of the icon (to the left)
     static constexpr float OffsetIconMinerals = 0.13f;
     static constexpr float OffsetIconEnergy = 0.13f;
@@ -54,7 +54,7 @@ namespace home {
     text.setAlignment(gf::Alignment::Center);
 
     mineralsIcon.setTexture(m_mineralsIcon);
-    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);   
+    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     mineralsIcon.setAnchor(gf::Anchor::CenterRight);
     mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMinerals, MineralsPosition.y}));
     mineralsIcon.setColor({1.0f, 0.0f, 1.0f, 1.0f});
@@ -62,8 +62,8 @@ namespace home {
     energyIcon.setTexture(m_energyIcon);
     energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     energyIcon.setAnchor(gf::Anchor::CenterRight);
-    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergy, MineralsPosition.y + YDistance}));    
-    energyIcon.setColor({0.0f, 1.0f, 0.0f, 1.0f});    
+    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergy, MineralsPosition.y + YDistance}));
+    energyIcon.setColor({0.0f, 1.0f, 0.0f, 1.0f});
 
     energyBackground.setColor(gf::Color::Black);
     energyBackground.setOutlineColor(gf::Color::Black);
