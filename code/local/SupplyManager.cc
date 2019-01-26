@@ -1,5 +1,6 @@
 #include "SupplyManager.h"
 
+#include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
@@ -44,13 +45,37 @@ namespace home {
   }
 
   void SupplyManager::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    gf::Coordinates coordinates(target);
+
     for (auto &supply: m_supplies) {
+      // Ressource sprite
       gf::RectangleShape rectangle;
       rectangle.setSize(TileSize);
       rectangle.setColor(gf::Color::Red);
       rectangle.setPosition(TileSize * supply.position);
       rectangle.setAnchor(gf::Anchor::Center);
       target.draw(rectangle, states);
+
+      // Life bar of supply
+      float life = supply.quantity / supply.initialQuantity;
+      if (life < 1.0f) {
+        gf::Vector2f pos = TileSize * supply.position - TileSize * 0.5f;
+        pos.y -= TileSize.y * 0.5f;
+        rectangle.setSize({static_cast<float>(TileSize.width), coordinates.getRelativeSize({1.0f, 0.01f}).height});
+        rectangle.setColor(gf::Color::White);
+        rectangle.setOutlineColor(gf::Color::Black);
+        rectangle.setOutlineThickness(coordinates.getRelativeSize({1.0f, 0.002f}).height);
+        rectangle.setPosition(pos);
+        rectangle.setAnchor(gf::Anchor::TopLeft);
+        target.draw(rectangle, states);
+
+        gf::RectangleShape bar;
+        bar.setSize({TileSize.width * life, coordinates.getRelativeSize({1.0f, 0.01f}).height});
+        bar.setColor(gf::Color::Green);
+        bar.setPosition(pos);
+        bar.setAnchor(gf::Anchor::TopLeft);
+        target.draw(bar, states);
+      }
     }
   }
 

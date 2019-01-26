@@ -13,7 +13,16 @@ namespace home {
   };
 
   struct Supply {
+    Supply(SupplyType _type, float _quantity, gf::Vector2i _position)
+    : type(_type)
+    , initialQuantity(_quantity)
+    , quantity(_quantity)
+    , position(_position) {
+
+    }
+
     SupplyType type;
+    float initialQuantity;
     float quantity;
     gf::Vector2i position;
   };
