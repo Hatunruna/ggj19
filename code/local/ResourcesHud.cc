@@ -35,7 +35,7 @@ namespace home {
     // Relative vertical distance between the 2 elements of the HUD
     static constexpr float YDistance = 0.10f;
     // Scale of the oxygen icon
-    static constexpr float scale = 0.07f;
+    static constexpr float scale = 7500.0f;
 
     gf::Sprite mineralsIcon, energyIcon; // Icons
     gf::RectangleShape energyBackground, energy; // Energy bar
@@ -53,13 +53,13 @@ namespace home {
     text.setAlignment(gf::Alignment::Center);
 
     mineralsIcon.setTexture(m_mineralsIcon);
-    mineralsIcon.setScale(scale);   
+    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);   
     mineralsIcon.setAnchor(gf::Anchor::CenterRight);
     mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMinerals, MineralsPosition.y}));
     mineralsIcon.setColor({1.0f, 0.0f, 1.0f, 1.0f});
 
     energyIcon.setTexture(m_energyIcon);
-    energyIcon.setScale(scale);
+    energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     energyIcon.setAnchor(gf::Anchor::CenterRight);
     energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergy, MineralsPosition.y + YDistance}));    
     energyIcon.setColor({0.0f, 1.0f, 0.0f, 1.0f});    

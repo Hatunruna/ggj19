@@ -1,5 +1,6 @@
 #include "OxygenHud.h"
 
+#include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
@@ -21,32 +22,36 @@ namespace home {
 
   void OxygenHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
     // Size of the oxygen bar
-    static constexpr gf::Vector2f OxygenSize = {150.0f, 15.0f}; 
+    static constexpr gf::Vector2f OxygenSize = {0.15f, 0.025f}; 
     // Position of the oxygen bar
-    static constexpr gf::Vector2f OxygenPosition = {50.0f, 50.0f}; 
+    static constexpr gf::Vector2f OxygenPosition = {0.1f, 0.1f}; 
     // Offset of the icon (to the left)
-    static constexpr float OffsetIcon = 5.0f;
+    static constexpr float OffsetIcon = 0.01f;
     // Scale of the oxygen icon
-    static constexpr float scale = 0.07f;
+    static constexpr float scale = 7500.0f;
 
 
     gf::Sprite oxygenIcon; // Icons
     gf::RectangleShape oxygenBackground, oxygen; // Oxygen bar
+    gf::Coordinates coordinates(target);
 
     oxygenIcon.setTexture(m_oxygenIcon);
-    oxygenIcon.setScale(scale);
+    //gf::Log::debug("relative size y %f\n", coordinates.getRelativeSize({1, 1}).y);
+    oxygenIcon.setScale(coordinates.getRelativeSize({1, 1}).y / scale);
     oxygenIcon.setAnchor(gf::Anchor::CenterRight);
-    oxygenIcon.setPosition({OxygenPosition.x - OffsetIcon, OxygenPosition.y + OxygenSize.y / 2.0f});
+    oxygenIcon.setPosition(coordinates.getRelativeSize({OxygenPosition.x - OffsetIcon, OxygenPosition.y}));
     oxygenIcon.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});  
 
     oxygenBackground.setColor(gf::Color::Black);
     oxygenBackground.setAnchor(gf::Anchor::TopLeft);
-    oxygenBackground.setSize(OxygenSize);
-    oxygenBackground.setPosition(OxygenPosition);
+    oxygenBackground.setSize(coordinates.getRelativeSize(OxygenSize));
+    oxygenBackground.setPosition(coordinates.getRelativeSize(OxygenPosition));
+    oxygenBackground.setOutlineColor(gf::Color::Black);
+    oxygenBackground.setOutlineThickness(1.0f);
 
     oxygen.setColor({1.0f - m_oxygen / MaxOxygen, 0.0f, m_oxygen / MaxOxygen, 1.0f});
-    oxygen.setSize({m_oxygen / MaxOxygen * OxygenSize.x, OxygenSize.y - 2.0f});
-    oxygen.setPosition({OxygenPosition.x + 1.0f, OxygenPosition.y + 1.0f});
+    oxygen.setSize(coordinates.getRelativeSize({OxygenSize.x * m_oxygen / MaxOxygen, OxygenSize.y}));
+    oxygen.setPosition(coordinates.getRelativeSize({OxygenPosition.x, OxygenPosition.y}));
 
     target.draw(oxygenIcon, states);
     target.draw(oxygenBackground, states);
