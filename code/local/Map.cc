@@ -76,7 +76,7 @@ namespace home {
       gf::TileLayer& m_layer;
     };
 
-    constexpr const char *MapName = "map/MapForDev.tmx";
+    constexpr const char *MapName = "map/Map.tmx";
   }
 
   Map::Map()
