@@ -11,7 +11,7 @@
 
 namespace home {
   static constexpr gf::Vector2i TileSize = {128, 64};
-  static constexpr float OxygenHarvestSpeed = 2.0f; // 12 unit / sec;
+  static constexpr float OxygenHarvestSpeed = 4.0f; // 12 unit / sec;
 
   SupplyManager::SupplyManager()
   : m_heroLocation({0.0f, 0.0f}){

@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 0.5f;
+  static constexpr float OxygenLoss = 1.8f;
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -30,11 +30,11 @@ namespace home {
     // Size of the oxygen bar
     static constexpr gf::Vector2f OxygenSize = {0.15f, 0.025f};
     // Position of the oxygen bar
-    static constexpr gf::Vector2f OxygenPosition = {0.0f, 0.5f};
+    static constexpr gf::Vector2f OxygenPosition = {0.10f, 0.10f};
     // Offset of the icon (to the left)
     static constexpr float OffsetIcon = 0.01f;
     // Scale of the oxygen icon
-    static constexpr float scale = 7500.0f;
+    static constexpr float scale = 2000.0f;
 
 
     gf::Sprite oxygenIcon; // Icons
@@ -89,7 +89,7 @@ namespace home {
   gf::MessageStatus OxygenHud::onOxygenHarvested(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
     HarvestResource *message = static_cast<HarvestResource*>(msg);
-    if (message->resourceType == SupplyType::Oxygen && m_oxygen < MaxOxygen) {
+    if (message->resourceType == SupplyType::Oxygen) {
       if (message->quantity + m_oxygen > MaxOxygen) {
         m_oxygen = MaxOxygen;
       } else {

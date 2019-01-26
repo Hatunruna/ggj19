@@ -21,6 +21,7 @@ namespace home {
   , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png")) 
   , m_energyIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
+    gMessageManager().registerHandler<HarvestResource>(&ResourcesHud::onResourceHarvested, this);
   }
 
   void ResourcesHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -81,10 +82,22 @@ namespace home {
     target.draw(energyBackground, states);
     target.draw(energy, states);
   }
-  /*gf::MessageStatus Player::onResourceMined(gf::Id id, gf::Message *msg) {
-    assert(id == ResourceMined::type);
-    //m_positionClicked = static_cast<CursorClickedPosition*>(msg)->position;
-
+  gf::MessageStatus ResourcesHud::onResourceHarvested(gf::Id id, gf::Message *msg) {
+    assert(id == HarvestResource::type);
+    HarvestResource *message = static_cast<HarvestResource*>(msg);
+    if (message->resourceType == SupplyType::Metal) {
+      if (message->quantity + m_minerals > MaxMinerals) {
+        m_minerals = MaxMinerals;
+      } else {
+        m_minerals += message->quantity;
+      }
+    } else if (message->resourceType == SupplyType::Energy) {
+      if (message->quantity + m_minerals > MaxEnergy) {
+        m_energy = MaxEnergy;
+      } else {
+        m_energy += message->quantity;
+      }
+    }
     return gf::MessageStatus::Keep;
-  }*/
+  }
 }

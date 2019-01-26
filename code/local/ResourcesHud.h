@@ -5,12 +5,14 @@
 #include <gf/Font.h>
 #include <gf/Texture.h>
 
+#include "Messages.h"
+
 namespace home {
   class ResourcesHud : public gf::Entity {
     public :
     ResourcesHud();
       virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-      //virtual void update(gf::Time time) override;
+      gf::MessageStatus onResourceHarvested(gf::Id id, gf::Message *msg);        
     private :
       int m_minerals;
       float m_energy;
