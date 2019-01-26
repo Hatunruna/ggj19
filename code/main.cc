@@ -12,6 +12,7 @@
 
 #include <SFML/Audio.hpp>
 
+#include "local/ClockHud.h"
 #include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
@@ -117,6 +118,7 @@ int main() {
   home::Map map;
   home::FieldOfView fov;
   home::Player player;
+  home::ClockHud clockHud;
   home::ResourcesViewer rviewer;
 
   gf::EntityContainer mainEntities;
@@ -127,6 +129,7 @@ int main() {
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
+  hudEntities.addEntity(clockHud);
   hudEntities.addEntity(rviewer);
 
   // game loop

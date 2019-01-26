@@ -13,8 +13,13 @@ namespace home {
 
   Player::Player()
   : m_position({0.0f, 0.0f})
-  , m_positionClicked({0.0f, 0.0f}){
+  , m_positionClicked({0.0f, 0.0f})
+  , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
+  , m_wasJetSound(false){
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
+
+    m_jetSound.setLoop(true);
+    m_jetSound.setVolume(100.0f);
   }
 
   void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -36,6 +41,14 @@ namespace home {
       m_position += (move / length) * time.asSeconds() * Velocity;
     } else {
       m_position += move;
+    }
+
+    if (length > 0.0f && !m_wasJetSound) {
+      m_wasJetSound = true;
+      m_jetSound.play();
+    } else if (length <= 0.0f && m_wasJetSound) {
+      m_jetSound.stop();
+      m_wasJetSound = false;
     }
 
     HeroPosition message;
