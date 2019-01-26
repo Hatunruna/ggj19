@@ -14,9 +14,18 @@ namespace home {
   class Player : public gf::Entity {
     public :
       Player();
+
+      void setPosition(gf::Vector2f position) {
+        m_position = position;
+      }
+
+      gf::Vector2f getPosition() const {
+        return m_position;
+      }
+
       virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
       virtual void update(gf::Time time) override;
-    // Mouse click handler
+      // Mouse click handler
       gf::MessageStatus onMouseClicked(gf::Id id, gf::Message *msg);
 
     private:

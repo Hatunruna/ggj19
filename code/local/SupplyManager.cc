@@ -11,11 +11,11 @@
 
 namespace home {
   static constexpr gf::Vector2i TileSize = {128, 64};
-  static constexpr float HarvestSpeed = 100.0f; // 100 unit / sec;
+  static constexpr float OxygenHarvestSpeed = 2.0f; // 12 unit / sec;
 
   SupplyManager::SupplyManager()
   : m_heroLocation({0.0f, 0.0f}){
-    m_supplies.push_back({SupplyType::Metal, 1000.0f, {41, 96}});
+    m_supplies.push_back({SupplyType::Oxygen, 10.0f, {41, 96}});
 
     gMessageManager().registerHandler<HeroPosition>(&SupplyManager::onHeroPosition, this);
   }
@@ -24,17 +24,27 @@ namespace home {
     for (auto &supply: m_supplies) {
       gf::RectF rect(TileSize * supply.position - TileSize * 0.5f, TileSize);
       if (rect.contains(m_heroLocation)) {
-        float quantity = HarvestSpeed * time.asSeconds();
+        float quantity = OxygenHarvestSpeed * time.asSeconds();
         if (supply.quantity - quantity < 0.0f) {
           quantity = supply.quantity;
         }
 
         supply.quantity -= quantity;
 
+        if (!supply.soundStarted) {
+          supply.miningSound.play();
+          supply.soundStarted = true;
+        }
+
         HarvestResource message;
         message.resourceType = supply.type;
         message.quantity = quantity;
         gMessageManager().sendMessage(&message);
+      } else {
+        if (supply.soundStarted) {
+          supply.soundStarted = false;
+          supply.miningSound.stop();
+        }
       }
     }
 

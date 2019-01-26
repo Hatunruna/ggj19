@@ -16,22 +16,24 @@
 #include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
+#include "local/OxygenHud.h"
+#include "local/Physics.h"
 #include "local/Player.h"
-#include "local/ResourcesViewer.h"
+#include "local/ResourcesHud.h"
 #include "local/Singletons.h"
 #include "local/SupplyManager.h"
 #include "config.h"
 
 int main() {
   static constexpr gf::Vector2u ScreenSize(1024, 576);
-  static constexpr gf::Vector2f ViewSize(800.0f, 800.0f); // dummy values
-  static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f); // dummy values
+  static constexpr gf::Vector2f ViewSize(800.0f, 800.0f);
+  static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
 
   // initialization
 
-  gf::Window window("Game", ScreenSize);
+  gf::Window window("H.O.M.E. - Harvest Oxygen in the Maldoran Ecosystem", ScreenSize);
   window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
 
@@ -40,7 +42,6 @@ int main() {
   // singletons
 
   gf::SingletonStorage<home::ResourceManager> storageForResourceManager(home::gResourceManager);
-  gf::Log::debug("data dir: %s\n", HOME_DATA_DIR);
   home::gResourceManager().addSearchDir(HOME_DATA_DIR);
 
   gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
@@ -60,10 +61,10 @@ int main() {
 
   // background music
   float bgmVol = 10.0f;
-  bool bgmMuted = false;
+  bool bgmMuted = true;
   sf::Sound bgm(home::gResourceManager().getSound("sounds/main_theme.ogg"));
   bgm.setLoop(true);
-  bgm.setVolume(bgmVol);
+  bgm.setVolume(0.0f);
   bgm.play();
 
   // actions
@@ -116,12 +117,27 @@ int main() {
   actions.addAction(volumeDownAction);
 
   // entities
-  home::Map map;
+
+  gf::Path filename = home::gResourceManager().getAbsolutePath("map/Map.tmx");
+  gf::TmxLayers layers;
+  if (!layers.loadFromFile(filename)) {
+    gf::Log::error("Unable to load the map!\n");
+    return EXIT_FAILURE;
+  }
+
+  home::Map map(layers);
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
-  home::ResourcesViewer rviewer;
+  home::OxygenHud oxygenHud;
+  home::ResourcesHud resourcesHud;
   home::SupplyManager supplies;
+
+  home::Physics physics(layers, player);
+  home::PhysicsDebugger debugger(physics);
+  home::PhysicsDraw draw(debugger);
+
+  physics.setDraw(&draw);
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
@@ -129,11 +145,15 @@ int main() {
   mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
   mainEntities.addEntity(supplies);
+  mainEntities.addEntity(debugger);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities
   hudEntities.addEntity(clockHud);
-  hudEntities.addEntity(rviewer);
+  hudEntities.addEntity(oxygenHud);
+  hudEntities.addEntity(resourcesHud);
+
+
 
   // game loop
 
@@ -223,6 +243,7 @@ int main() {
     gf::Time time = clock.restart();
     mainEntities.update(time);
     hudEntities.update(time);
+    physics.update(time);
 
 
     // 3. draw

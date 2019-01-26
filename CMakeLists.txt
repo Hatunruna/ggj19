@@ -6,7 +6,10 @@ project(HOME
 
 include(GNUInstallDirs)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+
 find_package(gf REQUIRED)
+find_package(Box2D REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SFML2 REQUIRED sfml-audio>=2.1)
 
@@ -22,21 +25,27 @@ add_executable(home
   code/local/ClockHud.cc
   code/local/FieldOfView.cc
   code/local/Map.cc
+  code/local/Physics.cc
   code/local/Player.cc
   code/local/ResourceManager.cc
-  code/local/ResourcesViewer.cc
+  code/local/ResourcesHud.cc
+  code/local/Singletons.cc
+  code/local/OxygenHud.cc
   code/local/Singletons.cc
   code/local/SupplyManager.cc
+
 )
 
 target_include_directories(home
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/code
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${BOX2D_INCLUDE_DIRS}
 )
 
 target_link_libraries(home
   gf::gf0
+  ${BOX2D_LIBRARIES}
   ${SFML2_LIBRARIES}
 )
 
