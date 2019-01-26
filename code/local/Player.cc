@@ -8,36 +8,43 @@
 #include "Singletons.h"
 
 namespace home {
-    static constexpr float Velocity = 20.0f;
-    static constexpr float Radius = 5.0f;
-    Player::Player() 
-    : m_position({0.0f, 0.0f})
-    , m_positionClicked({0.0f, 0.0f}) {
-      gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
-    }
+  static constexpr float Velocity = 20.0f;
+  static constexpr float Radius = 5.0f;
 
-    void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-      gf::CircleShape player;      
-      player.setColor(gf::Color::Blue);
-      player.setRadius(Radius);
-      player.setPosition(m_position);
-      player.setAnchor(gf::Anchor::Center);
-      target.draw(player, states);
-    }
-    
-    void Player::update(gf::Time time) {
-      //gf::Log::debug("player position: %f, %f\n", m_position.x, m_position.y);
-      if (gf::squareDistance(m_positionClicked, m_position) > Radius) {
-        m_position += gf::normalize(m_positionClicked - m_position) * time.asSeconds() * Velocity;
-      }
-    }
+  Player::Player() 
+  : m_position({0.0f, 0.0f})
+  , m_positionClicked({0.0f, 0.0f}) {
+    gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
+  }
 
-    gf::MessageStatus Player::onMouseClicked(gf::Id id, gf::Message *msg) {
-      assert(id == CursorClickedPosition::type);
-      CursorClickedPosition *message = static_cast<CursorClickedPosition*>(msg);
-      m_positionClicked = message->position;
+  void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    gf::CircleShape player;      
+    player.setColor(gf::Color::Blue);
+    player.setRadius(Radius);
+    player.setPosition(m_position);
+    player.setAnchor(gf::Anchor::Center);
+    target.draw(player, states);
+  }
+  
+  void Player::update(gf::Time time) {
+    //gf::Log::debug("player position: %f, %f\n", m_position.x, m_position.y);
+    gf::Vector2f move = m_positionClicked - m_position;
+    float length = gf::euclideanLength(move);
 
-      // gf::Log::debug("message position: %f, %f\n", message->position.x, message->position.y);
-      return gf::MessageStatus::Keep;
-    }   
+    if (length > time.asSeconds() * Velocity) {
+      // Update player position according to where the mouse is clicked
+      m_position += (move / length) * time.asSeconds() * Velocity;
+    } else {
+      m_position += move;
+    }
+  }
+
+  gf::MessageStatus Player::onMouseClicked(gf::Id id, gf::Message *msg) {
+    assert(id == CursorClickedPosition::type);
+    // store mouse coordinates
+    m_positionClicked = static_cast<CursorClickedPosition*>(msg)->position;
+
+    // gf::Log::debug("message position: %f, %f\n", message->position.x, message->position.y);
+    return gf::MessageStatus::Keep;
+  }
 }
