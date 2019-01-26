@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.1" orientation="staggered" renderorder="right-down" width="116" height="116" tilewidth="128" tileheight="64" infinite="0" staggeraxis="y" staggerindex="odd" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="Basic Tile.tsx"/>
+ <layer id="2" name="Tile Layer 1" width="116" height="116">
+  <data encoding="base64" compression="zlib">
+   eJzt08EJADAMA7Fk/6X7KXSGHhJ4gsM7M3vH/7Rs2dG0RMsW/2zRssU/W7Rs8c8WLVv8s0XLFv8EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgOcAhroAIg==
+  </data>
+ </layer>
+</map>
