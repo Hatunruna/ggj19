@@ -16,7 +16,12 @@ namespace home {
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
   : m_oxygen(MaxOxygen)
-  , m_oxygenIcon(gResourceManager().getTexture("images/lungs.png")) {
+  , m_oxygenIcon(gResourceManager().getTexture("images/lungs.png"))
+  , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
+  , m_lowO2Volume(0.0f)
+  , m_lowO2SoundStarted(false) {
+    m_lowO2Sound.setLoop(true);
+    m_lowO2Sound.setVolume(m_lowO2Volume);
   }
 
   void OxygenHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -54,8 +59,25 @@ namespace home {
   }
 
   void OxygenHud::update(gf::Time time) {
+    // Low oxy limit for sound
+    static constexpr float LowO2Limit = 30.0f;
+
+
     if (m_oxygen > 0) {
       m_oxygen -= time.asSeconds() * OxygenLoss;
+    }
+
+    if (m_oxygen <= LowO2Limit) {
+      m_lowO2Volume = 100.0f - m_oxygen * 3.0f;
+      m_lowO2Sound.setVolume(m_lowO2Volume);
+      if (!m_lowO2SoundStarted) {
+        m_lowO2SoundStarted = true;
+        m_lowO2Sound.play();
+      }
+    }
+    if (m_oxygen > LowO2Limit && m_lowO2SoundStarted) {
+      m_lowO2SoundStarted = false;
+      m_lowO2Sound.stop();
     }
   }
 }
