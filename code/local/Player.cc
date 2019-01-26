@@ -8,7 +8,6 @@
 #include "Singletons.h"
 
 namespace home {
-<<<<<<< HEAD
   static constexpr float Velocity = 200.0f;
   static constexpr float OxygenLoss = 0.5f;
 
