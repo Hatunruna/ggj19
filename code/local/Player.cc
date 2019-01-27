@@ -145,7 +145,7 @@ namespace home {
           m_currentAnimation = &m_harvest_south_west;
           break;
         default:
-          assert(false);
+          //assert(false);
           break;
       }
     }

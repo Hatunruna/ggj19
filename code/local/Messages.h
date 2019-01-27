@@ -38,8 +38,10 @@ namespace home {
 
   struct GameOver: public gf::Message {
     static const gf::Id type = "GameOver"_id;
-    SupplyType resourceType;
-    float quantity;
+  };
+
+  struct MaxResources: public gf::Message {
+    static const gf::Id type = "MaxResources"_id;
   };
 }
 
