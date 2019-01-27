@@ -22,7 +22,7 @@ namespace home {
     gf::MessageStatus onCursorMovedPosition(gf::Id id, gf::Message *msg);
 
   private:
-    gf::TileLayer m_layer;
+    std::vector<gf::TileLayer> m_layers;
     std::vector<gf::Sprite> m_sprites;
   };
 }

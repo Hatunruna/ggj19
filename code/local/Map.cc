@@ -13,8 +13,8 @@ namespace home {
 
     class LayersMaker : public gf::TmxVisitor {
     public:
-      LayersMaker(gf::TileLayer& layer, std::vector<gf::Sprite>& sprites, SupplyManager& supplies)
-      : m_layer(layer)
+      LayersMaker(std::vector<gf::TileLayer>& layers, std::vector<gf::Sprite>& sprites, SupplyManager& supplies)
+      : m_layers(layers)
       , m_sprites(sprites)
       , m_supplies(supplies)
       {
@@ -27,11 +27,12 @@ namespace home {
         }
 
         assert(map.orientation == gf::TmxOrientation::Staggered);
-        assert(m_layer.getMapSize() == map.mapSize);
+
+        gf::TileLayer tileLayer(map.mapSize, gf::TileLayer::Staggered);
 
         gf::Log::info("Parsing layer '%s'\n", layer.name.c_str());
 
-        m_layer.setBlockSize(map.tileSize);
+        tileLayer.setBlockSize(map.tileSize);
 
         unsigned k = 0;
 
@@ -45,23 +46,25 @@ namespace home {
           if (gid != 0) {
             auto tileset = map.getTileSetFromGID(gid);
             assert(tileset);
-            m_layer.setTileSize(tileset->tileSize);
+            tileLayer.setTileSize(tileset->tileSize);
 
             gid = gid - tileset->firstGid;
-            m_layer.setTile({ i, j }, gid, cell.flip);
+            tileLayer.setTile({ i, j }, gid, cell.flip);
 
-            if (!m_layer.hasTexture()) {
+            if (!tileLayer.hasTexture()) {
               assert(tileset->image);
               const gf::Texture& texture = gResourceManager().getTexture(tileset->image->source);
-              m_layer.setTexture(texture);
+              tileLayer.setTexture(texture);
             } else {
-              assert(&gResourceManager().getTexture(tileset->image->source) == &m_layer.getTexture());
+              assert(&gResourceManager().getTexture(tileset->image->source) == &tileLayer.getTexture());
             }
 
           }
 
           k++;
         }
+
+        m_layers.push_back(std::move(tileLayer));
       }
 
       virtual void visitObjectLayer(const gf::TmxLayers& map, const gf::TmxObjectLayer& layer) override {
@@ -74,6 +77,9 @@ namespace home {
             continue;
           }
 
+          if (isResources) {
+
+          }
           auto tile = static_cast<gf::TmxTileObject *>(object.get());
 
           auto tileset = map.getTileSetFromGID(tile->gid);
@@ -83,16 +89,6 @@ namespace home {
           // compute texture rect
           auto lid = tile->gid - tileset->firstGid;
           auto subTexture = tileset->getSubTexture(lid, tileset->image->size);
-
-          const gf::Texture& texture = gResourceManager().getTexture(tileset->image->source);
-          gf::RectF textureRect = texture.computeTextureCoords(subTexture);
-
-          gf::Sprite sprite(texture, textureRect);
-          sprite.setPosition(tile->position);
-          sprite.setRotation(gf::degreesToRadians(tile->rotation));
-          sprite.setAnchor(gf::Anchor::BottomLeft); // see http://docs.mapeditor.org/en/stable/reference/tmx-map-format/#object
-
-          m_sprites.push_back(std::move(sprite));
 
           if (isResources) {
             gf::Vector2f position = tile->position;
@@ -113,28 +109,39 @@ namespace home {
                 assert(false);
                 break;
             }
+          } else {
+            const gf::Texture& texture = gResourceManager().getTexture(tileset->image->source);
+            gf::RectF textureRect = texture.computeTextureCoords(subTexture);
+
+            gf::Sprite sprite(texture, textureRect);
+            sprite.setPosition(tile->position);
+            sprite.setRotation(gf::degreesToRadians(tile->rotation));
+            sprite.setAnchor(gf::Anchor::BottomLeft); // see http://docs.mapeditor.org/en/stable/reference/tmx-map-format/#object
+
+            m_sprites.push_back(std::move(sprite));
           }
         }
       }
 
     private:
-      gf::TileLayer& m_layer;
+      std::vector<gf::TileLayer>& m_layers;
       std::vector<gf::Sprite>& m_sprites;
       SupplyManager& m_supplies;
     };
   }
 
   Map::Map(const gf::TmxLayers& layers, SupplyManager& supplies)
-  : m_layer(layers.mapSize, gf::TileLayer::Staggered)
   {
-    LayersMaker maker(m_layer, m_sprites, supplies);
+    LayersMaker maker(m_layers, m_sprites, supplies);
     layers.visitLayers(maker);
 
     gMessageManager().registerHandler<CursorMovedPosition>(&Map::onCursorMovedPosition, this);
   }
 
   void Map::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    target.draw(m_layer, states);
+    for (auto& layer : m_layers) {
+      target.draw(layer, states);
+    }
 
     for (auto& sprite : m_sprites) {
       target.draw(sprite, states);
