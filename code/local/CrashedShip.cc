@@ -9,8 +9,8 @@
 
 namespace home {
   static constexpr float OxygenHarvestSpeed = 6.0f; // 6 unit / sec;
-  static constexpr float OxygenQuantity = 100.0f;
-  static constexpr float UnloadSpeed = 10.0f; // 10 u / s
+  static constexpr float OxygenQuantity = 1000.0f;
+  static constexpr float UnloadSpeed = 1.0f; // 1 u / s
 
   CrashedShip::CrashedShip()
   : m_hitbox({5318.0f, 2350.0f}, {350.0f, 200.0f})

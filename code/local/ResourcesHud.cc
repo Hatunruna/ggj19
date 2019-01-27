@@ -12,9 +12,9 @@
 
 namespace home {
 
-  static constexpr float MaxMinerals = 100;
-  static constexpr float MaxEnergy = 100.0f;
-  static constexpr float LimitBackpack = 20.0f;
+  static constexpr float MaxMinerals = 8000.0f;
+  static constexpr float MaxEnergy = 9000.0f;
+  static constexpr float LimitBackpack = 4000.0f;
 
 
   ResourcesHud::ResourcesHud()
