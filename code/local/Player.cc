@@ -257,7 +257,6 @@ namespace home {
       Victory msg;
       gMessageManager().sendMessage(&msg);
     }
-    gf::Log::debug("Coordinates: (%f, %f)\n", m_position.x, m_position.y);
     HeroPosition message;
     message.position = m_position;
     gMessageManager().sendMessage(&message);
