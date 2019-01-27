@@ -87,6 +87,8 @@ namespace home {
       gf::Animation m_harvest_south_west;
 
       gf::Animation m_death;
+
+      gf::Texture &m_crosshairTexture;
   };
 }
 
