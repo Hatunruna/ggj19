@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 5.0f; // 0.01f
+  static constexpr float OxygenLoss = 1.0f; // 1.0f
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()

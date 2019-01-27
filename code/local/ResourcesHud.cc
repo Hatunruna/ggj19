@@ -55,13 +55,6 @@ namespace home {
     gf::Coordinates coordinates(target);
     gf::Text text;
 
-    if (m_messageDisplayed) {
-      MessageToDisplay msg;
-      msg.message = "Your inventory is full!";
-      msg.displayTime = 4.0f;
-      gMessageManager().sendMessage(&msg);
-      m_displayable = false;
-    }
     float backpackLoad = m_cristalQuantity + m_metalQuantity;
 
     backpackIcon.setTexture(m_backpackIcon);
@@ -122,8 +115,6 @@ namespace home {
     target.draw(energyBackground, states);
     target.draw(energy, states);
 
-    gf::Text shipText;
-
     if (m_messageDisplayed) {
       MessageToDisplay msg;
       msg.message = "Your inventory is full!";
@@ -136,8 +127,6 @@ namespace home {
   void ResourcesHud::update(gf::Time time) {
     if (m_displayable && m_cristalQuantity + m_metalQuantity >= LimitBackpack) {
       m_messageDisplayed = true;
-      MaxResources info;
-      gMessageManager().sendMessage(&info);
     }
     if (m_messageDisplayed) {
       m_time += time;
