@@ -17,7 +17,7 @@ namespace home {
 
   ResourcesHud::ResourcesHud()
   : m_minerals(0)
-  , m_energy(17.0f)
+  , m_energy(0.0f)
   , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_energyIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
@@ -82,6 +82,14 @@ namespace home {
     target.draw(energyBackground, states);
     target.draw(energy, states);
   }
+
+  void ResourcesHud::update(gf::Time time) {
+    if (m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+      MaxResources info;
+      gMessageManager().sendMessage(&info);     
+    }
+  }
+
   gf::MessageStatus ResourcesHud::onResourceHarvested(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
     HarvestResource *message = static_cast<HarvestResource*>(msg);
@@ -92,7 +100,7 @@ namespace home {
         m_minerals += message->quantity;
       }
     } else if (message->resourceType == SupplyType::Energy) {
-      if (message->quantity + m_minerals > MaxEnergy) {
+      if (message->quantity + m_energy > MaxEnergy) {
         m_energy = MaxEnergy;
       } else {
         m_energy += message->quantity;

@@ -130,28 +130,49 @@ namespace home {
     };
   }
 
-  Map::Map(const gf::TmxLayers& layers, SupplyManager& supplies)
+  MapGraphicsData::MapGraphicsData(const gf::TmxLayers& layers, SupplyManager& supplies)
   {
-    LayersMaker maker(m_layers, m_sprites, supplies);
+    LayersMaker maker(tiles, sprites, supplies);
     layers.visitLayers(maker);
-
-    gMessageManager().registerHandler<CursorMovedPosition>(&Map::onCursorMovedPosition, this);
   }
+
+
+  Map::Map(Type type, MapGraphicsData& data)
+  : gf::Entity(type == Below ? 0 : 200)
+  , m_type(type)
+  , m_data(data)
+  {
+     gMessageManager().registerHandler<HeroPosition>(&Map::onHeroPosition, this);
+  }
+
 
   void Map::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    for (auto& layer : m_layers) {
-      target.draw(layer, states);
+    if (m_type == Below) {
+      for (auto& layer : m_data.tiles) {
+        target.draw(layer, states);
+      }
     }
 
-    for (auto& sprite : m_sprites) {
-      target.draw(sprite, states);
+    if (m_type == Below) {
+      for (auto& sprite : m_data.sprites) {
+        if (sprite.getPosition().y < m_hero.y) {
+          target.draw(sprite, states);
+        }
+      }
+    } else {
+      for (auto& sprite : m_data.sprites) {
+        if (sprite.getPosition().y >= m_hero.y) {
+          target.draw(sprite, states);
+        }
+      }
     }
   }
 
-  gf::MessageStatus Map::onCursorMovedPosition(gf::Id id, gf::Message *msg) {
-    assert(id == CursorMovedPosition::type);
-    CursorMovedPosition *message = static_cast<CursorMovedPosition*>(msg);
-//     gf::Log::debug("Mouse coordinates: %f, %f\n", message->position.x, message->position.y);
+  gf::MessageStatus Map::onHeroPosition(gf::Id id, gf::Message *msg) {
+    assert(id == HeroPosition::type);
+    auto message = static_cast<HeroPosition*>(msg);
+    m_hero = message->position;
     return gf::MessageStatus::Keep;
   }
+
 }
