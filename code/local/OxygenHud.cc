@@ -36,7 +36,7 @@ namespace home {
     // Offset of the icon (to the left)
     static constexpr float OffsetIcon = 0.01f;
     // Scale of the oxygen icon
-    static constexpr float scale = 2000.0f;
+    static constexpr float scale = 3000.0f;
 
     gf::Coordinates coordinates(target);
     if (!m_gameOver) {

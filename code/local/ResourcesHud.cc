@@ -41,7 +41,7 @@ namespace home {
     // Relative vertical distance between the 2 elements of the HUD
     static constexpr float YDistance = 0.10f;
     // Scale of the oxygen icon
-    static constexpr float Scale = 7500.0f;
+    static constexpr float Scale = 3000.0f;
     // Display time of popup message
     static constexpr float DisplayTime = 3.0f;
 
