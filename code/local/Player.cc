@@ -64,7 +64,8 @@ namespace home {
   , m_moveAndPauseTexture(gResourceManager().getTexture("images/player/player_animations.png"))
   , m_deathTexture(gResourceManager().getTexture("images/player/player_death.png"))
   , m_currentAnimation(nullptr)
-   {
+  , m_crosshairTexture(gResourceManager().getTexture("crosshair.png"))
+  {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
     gMessageManager().registerHandler<HarvestResource>(&Player::onHarvestResource, this);
     gMessageManager().registerHandler<GameOver>(&Player::onGameOver, this);
@@ -102,6 +103,13 @@ namespace home {
   }
 
   void Player::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    gf::Sprite cross;
+    cross.setTexture(m_crosshairTexture);
+    cross.setPosition(m_positionClicked);
+    cross.setScale({ 0.5f, 0.25f });
+    cross.setAnchor(gf::Anchor::Center);
+    target.draw(cross, states);
+
     gf::AnimatedSprite sprite;
     sprite.setAnimation(*m_currentAnimation);
     sprite.setScale(0.75f);

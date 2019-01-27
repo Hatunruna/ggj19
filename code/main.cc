@@ -1,6 +1,7 @@
 #include <gf/Action.h>
 #include <gf/Clock.h>
 #include <gf/Color.h>
+#include <gf/Cursor.h>
 #include <gf/EntityContainer.h>
 #include <gf/Event.h>
 #include <gf/Log.h>
@@ -49,6 +50,17 @@ int main() {
 
   gf::SingletonStorage<gf::MessageManager> storageForMessageManager(home::gMessageManager);
   gf::SingletonStorage<gf::Random> storageForRandom(home::gRandom);
+
+  // cursor
+
+  gf::Image image;
+  image.loadFromFile(home::gResourceManager().getAbsolutePath("cursor.png"));
+
+  gf::Cursor cursor;
+  cursor.loadFromImage(image, { 32u, 32u });
+
+  window.setMouseCursor(cursor);
+
 
   // views
 
