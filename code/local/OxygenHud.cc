@@ -65,10 +65,10 @@ namespace home {
       target.draw(oxygenBackground, states);
       target.draw(oxygen, states);
     } else {
-      MessageToDisplay msg;
-      msg.message = "Game Over";
-      msg.displayTime = 3.0f;
-      gMessageManager().sendMessage(&msg);
+    //   MessageToDisplay msg;
+    //   msg.message = "Game Over";
+    //   msg.displayTime = 3.0f;
+    //   gMessageManager().sendMessage(&msg);
       m_gameOver = false;
     }
   }

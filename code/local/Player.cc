@@ -65,6 +65,8 @@ namespace home {
   , m_deathTexture(gResourceManager().getTexture("images/player/player_death.png"))
   , m_currentAnimation(nullptr)
   , m_crosshairTexture(gResourceManager().getTexture("crosshair.png"))
+  , m_gameOverImg(gResourceManager().getTexture("images/game_over.png"))
+  , m_gameOverAlpha(0.0f)
   {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
     gMessageManager().registerHandler<HarvestResource>(&Player::onHarvestResource, this);
@@ -116,6 +118,16 @@ namespace home {
     sprite.setPosition(m_position);
     sprite.setAnchor(gf::Anchor::Center);
     target.draw(sprite, states);
+
+    if (m_dead) {
+      gf::Sprite goSprite;
+      goSprite.setTexture(m_gameOverImg);
+      goSprite.setColor({1.0f, 1.0f, 1.0f, m_gameOverAlpha});
+      goSprite.setScale(0.55f);
+      goSprite.setAnchor(gf::Anchor::Center);
+      goSprite.setPosition(m_position);
+      target.draw(goSprite, states);
+    }
   }
 
   void Player::update(gf::Time time) {
@@ -245,6 +257,10 @@ namespace home {
     gMessageManager().sendMessage(&message);
 
     m_overSupply = false;
+
+    if (m_dead) {
+      m_gameOverAlpha = m_gameOverAlpha >= 1.0f ? 1.0f : m_gameOverAlpha + time.asSeconds();
+    }
   }
 
   gf::MessageStatus Player::onMouseClicked(gf::Id id, gf::Message *msg) {

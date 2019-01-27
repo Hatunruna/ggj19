@@ -89,6 +89,9 @@ namespace home {
       gf::Animation m_death;
 
       gf::Texture &m_crosshairTexture;
+
+      gf::Texture &m_gameOverImg;
+      float m_gameOverAlpha;
   };
 }
 
