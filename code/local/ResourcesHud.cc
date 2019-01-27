@@ -12,18 +12,24 @@
 
 namespace home {
 
-  static constexpr int MaxMinerals = 100;
+  static constexpr float MaxMinerals = 100;
   static constexpr float MaxEnergy = 100.0f;
+  static constexpr float LimitBackpack = 20.0f;
 
 
   ResourcesHud::ResourcesHud()
-  : m_minerals(0)
+  : m_minerals(0.0f)
   , m_energy(0.0f)
   , m_messageDisplayed(false)
+  , m_backpackIcon(gResourceManager().getTexture("images/inventory_full_icon.png"))
   , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
   , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
-  , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
+  , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf"))
+  , m_cristalQuantity(0.0f)
+  , m_metalQuantity(0.0f)  {
     gMessageManager().registerHandler<HarvestResource>(&ResourcesHud::onResourceHarvested, this);
+    gMessageManager().registerHandler<UnloadBackpack>(&ResourcesHud::onUnloadBackpack, this);
+    gMessageManager().registerHandler<InfoSupplies>(&ResourcesHud::onInfoSupplies, this);
   }
 
   void ResourcesHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
@@ -45,30 +51,33 @@ namespace home {
     // Display time of popup message
     static constexpr float DisplayTime = 3.0f;
 
-    gf::Sprite mineralsIcon, energyIcon; // Icons
-    gf::RectangleShape energyBackground, energy; // Energy bar
+    gf::Sprite mineralsIcon, energyIcon, backpackIcon; // Icons
+    gf::RectangleShape energyBackground, energy, backpackBackground, backpack; // Energy bar
     gf::Coordinates coordinates(target);
-    gf::Text text, shipText;
+    gf::Text text;
+    float backpackLoad = m_cristalQuantity + m_metalQuantity;
 
-    if (m_messageDisplayed && m_time.asSeconds() < DisplayTime) {
-      shipText.setFont(m_font);
-      shipText.setColor({0.0, 0.0, 0.0, 1.0 - m_time.asSeconds() / DisplayTime});
-      shipText.setOutlineColor({1.0, 1.0, 1.0, 1.0 - m_time.asSeconds() / DisplayTime});
-      shipText.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
-      shipText.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
-      shipText.setString("Your inventory is full!");
-      shipText.setParagraphWidth(target.getSize().x);
-      shipText.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
-      shipText.setAlignment(gf::Alignment::Center);
-      shipText.setAnchor(gf::Anchor::Center);
-      target.draw(shipText, states);
-    }
+    backpackIcon.setTexture(m_backpackIcon);
+    backpackIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
+    backpackIcon.setAnchor(gf::Anchor::CenterRight);
+    backpackIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y - YDistance}));
+
+    backpackBackground.setColor(gf::Color::Black);
+    backpackBackground.setOutlineColor(gf::Color::Black);
+    backpackBackground.setOutlineThickness(1.0f);
+    backpackBackground.setAnchor(gf::Anchor::TopRight);
+    backpackBackground.setSize(coordinates.getRelativeSize(EnergySize));
+    backpackBackground.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y - YDistance}));
+
+    backpack.setColor({0.0f, 0.0f, 1.0f, 1.0f});
+    backpack.setSize(coordinates.getRelativeSize({EnergySize.x * backpackLoad / LimitBackpack, EnergySize.y}));
+    backpack.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y - YDistance}));
 
     text.setFont(m_font);
     text.setOutlineColor(gf::Color::White);
     text.setOutlineThickness(coordinates.getRelativeCharacterSize(0.002f));
     text.setCharacterSize(coordinates.getRelativeCharacterSize(0.03f));
-    text.setString(std::to_string(m_minerals) + " / " + std::to_string(MaxMinerals));
+    text.setString(gf::niceNum(m_minerals, 1) + " / " + gf::niceNum(MaxMinerals, 1));
     text.setParagraphWidth(coordinates.getRelativeCharacterSize(0.03f) * 5.0f);
     text.setAnchor(gf::Anchor::TopRight);
     text.setPosition(coordinates.getRelativeSize(MineralsPosition));
@@ -97,11 +106,30 @@ namespace home {
     energy.setSize(coordinates.getRelativeSize({EnergySize.x * m_energy / MaxEnergy, EnergySize.y}));
     energy.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y + YDistance}));
 
+    target.draw(backpackIcon, states);
+    target.draw(backpackBackground, states);
+    target.draw(backpack, states);
     target.draw(text, states);
     target.draw(mineralsIcon, states);
     target.draw(energyIcon, states);
     target.draw(energyBackground, states);
     target.draw(energy, states);
+
+    gf::Text shipText;
+
+    if (m_messageDisplayed && m_time.asSeconds() < DisplayTime) {
+      shipText.setFont(m_font);
+      shipText.setColor({0.0, 0.0, 0.0, 1.0 - m_time.asSeconds() / DisplayTime});
+      shipText.setOutlineColor({1.0, 1.0, 1.0, 1.0 - m_time.asSeconds() / DisplayTime});
+      shipText.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
+      shipText.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
+      shipText.setString("Your inventory is full!");
+      shipText.setParagraphWidth(target.getSize().x);
+      shipText.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
+      shipText.setAlignment(gf::Alignment::Center);
+      shipText.setAnchor(gf::Anchor::Center);
+      target.draw(shipText, states);
+    }
   }
 
   void ResourcesHud::update(gf::Time time) {
@@ -118,19 +146,50 @@ namespace home {
   gf::MessageStatus ResourcesHud::onResourceHarvested(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
     HarvestResource *message = static_cast<HarvestResource*>(msg);
-    if (message->resourceType == SupplyType::Metal) {
-      if (message->quantity + m_minerals > MaxMinerals) {
-        m_minerals = MaxMinerals;
-      } else {
-        m_minerals += message->quantity;
-      }
-    } else if (message->resourceType == SupplyType::Energy) {
-      if (message->quantity + m_energy > MaxEnergy) {
-        m_energy = MaxEnergy;
-      } else {
-        m_energy += message->quantity;
-      }
+    if (message->resourceType == SupplyType::Oxygen) {
+      return gf::MessageStatus::Keep;
     }
+
+    float newQuantity = message->quantity;
+    float remainder = 0.0f;
+
+    // If the backpack is full
+    if (newQuantity + m_metalQuantity + m_cristalQuantity > LimitBackpack) {
+      remainder = (newQuantity + m_metalQuantity + m_cristalQuantity) - LimitBackpack;
+      newQuantity = newQuantity - remainder;
+    }
+
+    if (message->resourceType == SupplyType::Metal) {
+      m_metalQuantity += newQuantity;
+    } else if (message->resourceType == SupplyType::Energy) {
+      m_cristalQuantity += newQuantity;
+    }
+
+    message->quantity = remainder;
+
+    return gf::MessageStatus::Keep;
+  }
+
+  gf::MessageStatus ResourcesHud::onUnloadBackpack(gf::Id id, gf::Message *msg) {
+    assert(id == UnloadBackpack::type);
+    UnloadBackpack *message = static_cast<UnloadBackpack*>(msg);
+
+    message->cristalQuantity = m_cristalQuantity * message->dt;
+    message->metalQuantity = m_metalQuantity * message->dt;
+
+    m_cristalQuantity -= message->cristalQuantity;
+    m_metalQuantity -= message->metalQuantity;
+
+    return gf::MessageStatus::Keep;
+  }
+
+  gf::MessageStatus ResourcesHud::onInfoSupplies(gf::Id id, gf::Message *msg) {
+    assert(id == InfoSupplies::type);
+    InfoSupplies *message = static_cast<InfoSupplies*>(msg);
+
+    m_energy = gf::clamp(message->cristalQuantity, 0.0f, MaxMinerals);
+    m_minerals = gf::clamp(message->metalQuantity, 0.0f, MaxEnergy);
+
     return gf::MessageStatus::Keep;
   }
 }

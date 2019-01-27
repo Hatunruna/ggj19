@@ -53,9 +53,9 @@ namespace home {
         message.quantity = quantity;
         gMessageManager().sendMessage(&message);
 
-        if (supply.type == SupplyType::Oxygen) {
-          supply.quantity += message.quantity;
-        }
+        // Add the remainder to the supply
+        supply.quantity += message.quantity;
+
       } else {
         if (supply.soundStarted) {
           supply.soundStarted = false;

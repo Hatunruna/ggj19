@@ -12,6 +12,7 @@
 
 #include <SFML/Audio.hpp>
 
+#include "local/CrashedShip.h"
 #include "local/ClockHud.h"
 #include "local/FieldOfView.h"
 #include "local/Map.h"
@@ -136,6 +137,7 @@ int main() {
   home::ClockHud clockHud;
   home::OxygenHud oxygenHud;
   home::ResourcesHud resourcesHud;
+  home::CrashedShip ship;
 
   home::Physics physics(layers, player);
   home::PhysicsDebugger debugger(physics);
@@ -151,6 +153,7 @@ int main() {
   mainEntities.addEntity(player);
   mainEntities.addEntity(supplies);
   mainEntities.addEntity(debugger);
+  mainEntities.addEntity(ship);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities

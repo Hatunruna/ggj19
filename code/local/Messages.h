@@ -43,6 +43,19 @@ namespace home {
   struct MaxResources: public gf::Message {
     static const gf::Id type = "MaxResources"_id;
   };
+
+  struct UnloadBackpack: public gf::Message {
+    static const gf::Id type = "UnloadBackpack"_id;
+    float dt;
+    float cristalQuantity;
+    float metalQuantity;
+  };
+
+  struct InfoSupplies: public gf::Message {
+    static const gf::Id type = "InfoSupplies"_id;
+    float cristalQuantity;
+    float metalQuantity;
+  };
 }
 
 #endif // HOME_MESSAGES_H
