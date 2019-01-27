@@ -16,6 +16,42 @@ namespace home {
   static constexpr float MaxEnergy = 9000.0f;
   static constexpr float LimitBackpack = 4000.0f;
 
+  void drawSlideBar(gf::RenderTarget& target, const gf::RenderStates& states, gf::Texture &icon, gf::Vector2f position, gf::Color4f color, float ratio, bool iconColored = true) {
+    static constexpr gf::Vector2f IconTextureSize = {300.0f, 300.0f};
+
+    gf::Coordinates coordinates(target);
+    gf::Vector2f slideBarSize(coordinates.getRelativeSize({0.015f, 0.25f}));
+    gf::Vector2f IconSize = coordinates.getRelativeSize({0.12f, 0.12f});
+    float ThicknessSize = coordinates.getRelativeSize({0.002f, 0.002f}).height;
+    // gf::Vector2f Offset = coordinates.getRelativeSize({0.005f, 0.005f});
+
+    gf::Sprite sprite;
+    sprite.setTexture(icon);
+    sprite.setScale(IconSize.height / IconTextureSize);
+    sprite.setAnchor(gf::Anchor::TopCenter);
+    sprite.setPosition(position);
+    if (iconColored)
+      sprite.setColor(color);
+    target.draw(sprite, states);
+
+    gf::RectangleShape rectangle;
+    position.height += IconSize.height;
+    rectangle.setSize(slideBarSize);
+    rectangle.setColor(gf::Color::Black);
+    rectangle.setOutlineThickness(ThicknessSize);
+    rectangle.setOutlineColor(gf::Color::Black);
+    rectangle.setPosition(position);
+    rectangle.setAnchor(gf::Anchor::TopCenter);
+    target.draw(rectangle, states);
+
+    position.height += rectangle.getSize().height;
+    rectangle.setColor(color);
+    rectangle.setSize({slideBarSize.width, ratio * slideBarSize.height});
+    rectangle.setAnchor(gf::Anchor::BottomCenter);
+    rectangle.setPosition(position);
+    target.draw(rectangle, states);
+  }
+
 
   ResourcesHud::ResourcesHud()
   : m_minerals(0.0f)
@@ -33,86 +69,19 @@ namespace home {
   }
 
   void ResourcesHud::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    // Size of the oxygen bar
-    static constexpr gf::Vector2f EnergySize = {0.15f, 0.025f};
-    // Position of the minerals hud
-    static constexpr gf::Vector2f MineralsPosition = {0.95f, 0.80f};
-    // Offset of the icon (to the left)
-    static constexpr float OffsetIconMineralsLeft = 0.13f;
-    static constexpr float OffsetIconEnergyLeft = 0.13f;
-    // Offset of the icon (to the top)
-    static constexpr float OffsetIconMineralsTop = -0.02f;
-    static constexpr float OffsetIconEnergyTop = -0.02f;
-    static constexpr float OffsetBar = 0.12f;
-    // Relative vertical distance between the 2 elements of the HUD
-    static constexpr float YDistance = 0.10f;
-    // Scale of the oxygen icon
-    static constexpr float Scale = 3000.0f;
-
-    gf::Sprite mineralsIcon, energyIcon, backpackIcon; // Icons
-    gf::RectangleShape energyBackground, energy, backpackBackground, backpack; // Energy bar
     gf::Coordinates coordinates(target);
-    gf::Text text;
+    static constexpr gf::Vector2f offset = { 0.02f, 0.6f };
+    gf::Vector2f slideBarSize(coordinates.getRelativeSize({0.015f, 0.25f}));
 
-    float backpackLoad = m_cristalQuantity + m_metalQuantity;
+    auto pos = coordinates.getRelativePoint(offset);
+    pos.x = 2.0f * slideBarSize.width;
+    drawSlideBar(target, states, m_energyIcon, pos, gf::Color::Yellow, m_energy / MaxEnergy);
 
-    backpackIcon.setTexture(m_backpackIcon);
-    backpackIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
-    backpackIcon.setAnchor(gf::Anchor::CenterRight);
-    backpackIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y - YDistance}));
+    pos.x += offset.width + 4.0f * slideBarSize.width;
+    drawSlideBar(target, states, m_mineralsIcon, pos, gf::Color::Gray(0.5f), m_minerals / MaxMinerals);
 
-    backpackBackground.setColor(gf::Color::Black);
-    backpackBackground.setOutlineColor(gf::Color::Black);
-    backpackBackground.setOutlineThickness(1.0f);
-    backpackBackground.setAnchor(gf::Anchor::TopRight);
-    backpackBackground.setSize(coordinates.getRelativeSize(EnergySize));
-    backpackBackground.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y - YDistance}));
-
-    backpack.setColor({0.44f, 0.36f, 0.36f, 1.0f});
-    backpack.setSize(coordinates.getRelativeSize({EnergySize.x * backpackLoad / LimitBackpack, EnergySize.y}));
-    backpack.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y - YDistance}));
-
-    text.setFont(m_font);
-    text.setOutlineColor(gf::Color::White);
-    text.setOutlineThickness(coordinates.getRelativeCharacterSize(0.002f));
-    text.setCharacterSize(coordinates.getRelativeCharacterSize(0.03f));
-    text.setString(gf::niceNum(m_minerals, 1) + " / " + gf::niceNum(MaxMinerals, 1));
-    text.setParagraphWidth(coordinates.getRelativeCharacterSize(0.03f) * 5.0f);
-    text.setAnchor(gf::Anchor::TopRight);
-    text.setPosition(coordinates.getRelativeSize(MineralsPosition));
-    text.setAlignment(gf::Alignment::Center);
-
-    mineralsIcon.setTexture(m_mineralsIcon);
-    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
-    mineralsIcon.setAnchor(gf::Anchor::CenterRight);
-    mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMineralsLeft, MineralsPosition.y - OffsetIconMineralsTop}));
-    mineralsIcon.setColor({0.5f, 0.5f, 0.5f, 1.0f});
-
-    energyIcon.setTexture(m_energyIcon);
-    energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
-    energyIcon.setAnchor(gf::Anchor::CenterRight);
-    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y + YDistance  - OffsetIconEnergyTop}));
-    energyIcon.setColor({1.0f, 1.0f, 0.0f, 1.0f});
-
-    energyBackground.setColor(gf::Color::Black);
-    energyBackground.setOutlineColor(gf::Color::Black);
-    energyBackground.setOutlineThickness(1.0f);
-    energyBackground.setAnchor(gf::Anchor::TopRight);
-    energyBackground.setSize(coordinates.getRelativeSize(EnergySize));
-    energyBackground.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y + YDistance}));
-
-    energy.setColor({1.0f, 1.0f, 0.0f, 1.0f});
-    energy.setSize(coordinates.getRelativeSize({EnergySize.x * m_energy / MaxEnergy, EnergySize.y}));
-    energy.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y + YDistance}));
-
-    target.draw(backpackIcon, states);
-    target.draw(backpackBackground, states);
-    target.draw(backpack, states);
-    target.draw(text, states);
-    target.draw(mineralsIcon, states);
-    target.draw(energyIcon, states);
-    target.draw(energyBackground, states);
-    target.draw(energy, states);
+    pos.x = target.getSize().width - offset.width - 2.0f * slideBarSize.width;
+    drawSlideBar(target, states, m_backpackIcon, pos, {0.44f, 0.36f, 0.36f, 1.0f}, (m_cristalQuantity + m_metalQuantity) / LimitBackpack, false);
   }
 
   void ResourcesHud::update(gf::Time time) {
