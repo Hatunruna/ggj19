@@ -12,11 +12,11 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 1.0f; // 0.01f
+  static constexpr float OxygenLoss = 5.0f; // 0.01f
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
-  : m_oxygen(MaxOxygen)
+  : m_oxygen(10.1f)
   , m_oxygenIcon(gResourceManager().getTexture("images/oxygen_icon.png"))
   , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
   , m_lowO2Volume(0.0f)

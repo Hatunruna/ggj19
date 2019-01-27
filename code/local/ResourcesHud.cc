@@ -76,7 +76,7 @@ namespace home {
     backpackBackground.setSize(coordinates.getRelativeSize(EnergySize));
     backpackBackground.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y - YDistance}));
 
-    backpack.setColor({0.0f, 0.0f, 1.0f, 1.0f});
+    backpack.setColor({0.44f, 0.36f, 0.36f, 1.0f});
     backpack.setSize(coordinates.getRelativeSize({EnergySize.x * backpackLoad / LimitBackpack, EnergySize.y}));
     backpack.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y - YDistance}));
 
@@ -109,7 +109,7 @@ namespace home {
     energyBackground.setSize(coordinates.getRelativeSize(EnergySize));
     energyBackground.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y + YDistance}));
 
-    energy.setColor({0.0f, 1.0f, 0.0f, 1.0f});
+    energy.setColor({1.0f, 1.0f, 0.0f, 1.0f});
     energy.setSize(coordinates.getRelativeSize({EnergySize.x * m_energy / MaxEnergy, EnergySize.y}));
     energy.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetBar, MineralsPosition.y + YDistance}));
 
@@ -188,8 +188,8 @@ namespace home {
     assert(id == InfoSupplies::type);
     InfoSupplies *message = static_cast<InfoSupplies*>(msg);
 
-    m_energy = gf::clamp(message->cristalQuantity, 0.0f, MaxMinerals);
-    m_minerals = gf::clamp(message->metalQuantity, 0.0f, MaxEnergy);
+    m_energy = gf::clamp(message->cristalQuantity, 0.0f, MaxEnergy);
+    m_minerals = gf::clamp(message->metalQuantity, 0.0f, MaxMinerals);
 
     return gf::MessageStatus::Keep;
   }

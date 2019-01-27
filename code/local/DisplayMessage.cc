@@ -17,7 +17,7 @@ namespace home {
   }
 
   void DisplayMessage::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-    if (m_time.asSeconds() < m_displayTime && m_state == State::Displaying && m_displayTime > 0) {
+    if (m_state == State::Displaying && m_displayTime > 0) {
       gf::Coordinates coordinates(target);
       gf::Text text;
       text.setFont(m_font);
@@ -31,19 +31,24 @@ namespace home {
       text.setAlignment(gf::Alignment::Center);
       text.setAnchor(gf::Anchor::Center);
       target.draw(text, states);
-    } else if (m_time.asSeconds() >= m_displayTime) {
-      m_state == State::Finished;
-    }
+    }/* else if (m_time.asSeconds() >= m_displayTime) {
+      m_state = State::Finished;
+    }*/
   }
 
   void DisplayMessage::update(gf::Time time) {
     switch (m_state) {
-      case State::Displaying: m_time += time;break;
+      case State::Displaying:
+      m_time += time;
+      if (m_time.asSeconds() >= m_displayTime) { 
+        m_state = State::Finished;
+      }
+      ;break;
       case State::Finished:
         m_time = gf::Time::zero();
         m_state = State::Idle;
         break;
-      default: break;
+      default: gf::Log::debug("I went here yooo\n"); break;
     }
   }
 
@@ -53,6 +58,7 @@ namespace home {
     m_message = message->message;
     m_displayTime = message->displayTime;
     m_state = State::Displaying;
+    gf::Log::debug("Message received\n");
     return gf::MessageStatus::Keep;
   }
 }
