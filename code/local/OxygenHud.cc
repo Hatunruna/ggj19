@@ -16,7 +16,7 @@ namespace home {
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
-  : m_oxygen(MaxOxygen)
+  : m_oxygen(100.0f)
   , m_oxygenIcon(gResourceManager().getTexture("images/oxygen_icon.png"))
   , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
   , m_lowO2Volume(0.0f)
