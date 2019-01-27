@@ -24,6 +24,7 @@ namespace home {
       float m_lowO2Volume;
       bool m_lowO2SoundStarted;
       bool m_gameOver;
+      bool m_gameFinished;
       gf::Font &m_font;
   };
 }

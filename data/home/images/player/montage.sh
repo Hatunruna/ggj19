@@ -22,3 +22,6 @@ montage raw/west/move/*.png \
         raw/south_east/harvest/*.png \
         raw/south_west/harvest/*.png \
         -background none -tile 22x19 -geometry 256x256+0  png32:player_animations.png
+
+montage raw/death/*.png \
+        -background none -tile 22x4 -geometry 256x256+0  png32:player_death.png

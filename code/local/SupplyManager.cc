@@ -16,7 +16,7 @@ namespace home {
   static constexpr float HarvestSpeed = 100.0f; // 100 unit / sec;
   static constexpr float HarvestQuantity = 1000.0f;
   static constexpr float OxygenHarvestSpeed = 6.0f; // 6 unit / sec;
-  static constexpr float OxygenQuantity = 10.0f;
+  static constexpr float OxygenQuantity = 50.0f;
 
   SupplyManager::SupplyManager()
   : gf::Entity(10)
@@ -110,6 +110,24 @@ namespace home {
   }
 
   void SupplyManager::addSupply(SupplyType type, gf::Vector2f position) {
+    // Conut number of each supplies
+    // static int nbMetals = 0;
+    // static int nbGaz = 0;
+    // static int nbO2 = 0;
+    //
+    // switch (type) {
+    //   case SupplyType::Energy:
+    //     ++nbGaz;
+    //     break;
+    //   case SupplyType::Oxygen:
+    //     ++nbO2;
+    //     break;
+    //   case SupplyType::Metal:
+    //     ++nbMetals;
+    //     break;
+    // }
+    // gf::Log::debug("%d %d %d\n", nbMetals, nbGaz, nbO2);
+
     if (type == SupplyType::Oxygen) {
       m_supplies.push_back({type, OxygenQuantity, position});
     } else {
@@ -120,7 +138,7 @@ namespace home {
   gf::MessageStatus SupplyManager::onHeroPosition(gf::Id id, gf::Message *msg) {
     assert(id == HeroPosition::type);
     auto location = static_cast<HeroPosition*>(msg);
-
+    //gf::Log::info("Position: (%f, %f)\n", location->position.x, location->position.y);
     m_heroLocation = location->position;
 
     return gf::MessageStatus::Keep;

@@ -9,7 +9,7 @@
 #include "Singletons.h"
 
 namespace home {
-  static constexpr float TimeFactor = 1.0f / 60.0f; // 1 minute = 1 hour in game
+  static constexpr float TimeFactor = 1.0f / 15.0f; // 15 secondes = 1 hour in game
   static constexpr float StartDusk = 20.0f; // Start of dusk - 8 pm
   static constexpr float StartDawn = 8.0f; // Start of dawn - 8 am
   static constexpr float PeriodTransitionDuration = 1.0f; // 1 hour in game
