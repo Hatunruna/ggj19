@@ -179,6 +179,8 @@ namespace home {
               base.y /= 2;
               base += tileSize / 2;
 
+              base.y -= tileSize.height / 2; // HACK
+
               for (auto& rel : NeighborsEven) {
                 gf::Vector2i neighbor = pos + rel.first;
 
@@ -203,6 +205,8 @@ namespace home {
               base.y /= 2;
               base.x += tileSize.width;
               base.y += tileSize.height / 2;
+
+              base.y -= tileSize.height / 2; // HACK
 
               for (auto& rel : NeighborsOdd) {
                 gf::Vector2i neighbor = pos + rel.first;
@@ -266,6 +270,39 @@ namespace home {
 
       }
 
+      virtual void visitObjectLayer(const gf::TmxLayers& map, const gf::TmxObjectLayer& layer) override {
+        gf::Log::info("Parsing object layer '%s'\n", layer.name.c_str());
+
+        for (auto& object : layer.objects) {
+          if (object->kind != gf::TmxObject::Tile) {
+            continue;
+          }
+
+          auto tile = static_cast<gf::TmxTileObject *>(object.get());
+
+          if (layer.name == "Trees") {
+            gf::Vector2f position = tile->position + gf::Vector2f(384 / 2, -70);
+
+            b2BodyDef bodyDef;
+            bodyDef.type = b2_staticBody;
+            bodyDef.position = fromVec(position);
+            auto body = m_world.CreateBody(&bodyDef);
+
+            b2CircleShape shape;
+            shape.m_radius = 50.0f * PhysicsScale;
+
+            b2FixtureDef fixtureDef;
+            fixtureDef.density = 1.0f;
+            fixtureDef.friction = 0.0f;
+            fixtureDef.restitution = 0.0f;
+            fixtureDef.shape = &shape;
+
+            body->CreateFixture(&fixtureDef);
+          }
+
+        }
+      }
+
     private:
       b2World& m_world;
     };
@@ -281,7 +318,7 @@ namespace home {
     PhysicsMaker maker(m_world);
     layers.visitLayers(maker);
 
-    gf::Vector2f initialPosition = m_player.getPosition();
+    gf::Vector2f initialPosition = m_player.getDynamics().position;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -309,15 +346,15 @@ namespace home {
   }
 
   void Physics::update(gf::Time time) {
-    gf::Vector2f position = m_player.getPosition();
-    m_hero->SetTransform(fromVec(position), 0.0f);
+    auto dynamics = m_player.getDynamics();
+    m_hero->SetTransform(fromVec(dynamics.position), 0.0f);
+    m_hero->SetLinearVelocity(fromVec(dynamics.velocity));
 
     static constexpr int32 VelocityIterations = 10; // 6;
     static constexpr int32 PositionIterations = 8; // 2;
     m_world.Step(time.asSeconds(), VelocityIterations, PositionIterations);
 
-    auto nextPosition = m_hero->GetPosition();
-    m_player.setPosition(toVec(nextPosition));
+    m_player.setDynamics({ toVec(m_hero->GetPosition()), toVec(m_hero->GetLinearVelocity()) });
   }
 
   /*

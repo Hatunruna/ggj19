@@ -48,11 +48,11 @@ namespace home {
 
   Player::Player()
   : gf::Entity(100)
-  , m_position(TileSize * gf::Vector2f(41.0f, 91.0f))
-  , m_positionClicked(TileSize * gf::Vector2f(41.0f, 91.0f))
+  , m_position(TileSize * gf::Vector2f(45.0f, 42.0f))
+  , m_positionClicked(TileSize * gf::Vector2f(45.0f, 42.0f))
   , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
   , m_wasJetSound(false)
-  , m_orientation(gf::Orientation::East)
+  , m_orientation(gf::Orientation::SouthEast)
   , m_moving(false)
   , m_overSupply(false)
   , m_moveAndPauseTexture(gResourceManager().getTexture("images/player/player_animations.png"))
@@ -104,15 +104,21 @@ namespace home {
 
     if (length > time.asSeconds() * Velocity) {
       // Update player position according to where the mouse is clicked
-      m_position += (move / length) * time.asSeconds() * Velocity;
+//      m_position += (move / length) * time.asSeconds() * Velocity;
       if (m_overSupply) {
         m_orientation = getHarvestOrientation(gf::angle(move));
       } else {
         m_orientation = getOrientation(gf::angle(move));
       }
+
+      m_velocity = (move / length) * Velocity;
       m_moving = true;
     } else {
+      if (m_overSupply) {
+        m_orientation = getHarvestOrientation(gf::angle(move));
+      }
       m_position += move;
+      m_velocity = { 0.0f, 0.0f };
       m_moving = false;
     }
 

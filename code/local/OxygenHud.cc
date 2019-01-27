@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 1.8f; // 1.8
+  static constexpr float OxygenLoss = 1.0f; // 0.01f
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -21,9 +21,9 @@ namespace home {
   , m_lowO2Sound(gResourceManager().getSound("sounds/breath_low_o2.ogg"))
   , m_lowO2Volume(0.0f)
   , m_lowO2SoundStarted(false)
-  , m_gameOver(false) 
+  , m_gameOver(false)
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
-    gMessageManager().registerHandler<HarvestResource>(&OxygenHud::onOxygenHarvested, this);    
+    gMessageManager().registerHandler<HarvestResource>(&OxygenHud::onOxygenHarvested, this);
     m_lowO2Sound.setLoop(true);
     m_lowO2Sound.setVolume(m_lowO2Volume);
   }
@@ -111,11 +111,15 @@ namespace home {
   gf::MessageStatus OxygenHud::onOxygenHarvested(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
     HarvestResource *message = static_cast<HarvestResource*>(msg);
+
     if (message->resourceType == SupplyType::Oxygen) {
-      if (message->quantity + m_oxygen > MaxOxygen) {
+      float newQuantity = message->quantity + m_oxygen;
+      if (newQuantity > MaxOxygen) {
         m_oxygen = MaxOxygen;
+        message->quantity = newQuantity - MaxOxygen;
       } else {
         m_oxygen += message->quantity;
+        message->quantity = 0;
       }
     }
     return gf::MessageStatus::Keep;

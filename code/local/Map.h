@@ -12,18 +12,32 @@
 #include "SupplyManager.h"
 
 namespace home {
+
+  struct MapGraphicsData {
+    MapGraphicsData(const gf::TmxLayers& layers, SupplyManager& supplies);
+
+    std::vector<gf::TileLayer> tiles;
+    std::vector<gf::Sprite> sprites;
+  };
+
   class Map : public gf::Entity {
   public :
-    Map(const gf::TmxLayers& layers, SupplyManager& supplies);
+    enum Type {
+      Below,
+      Above,
+    };
+
+    Map(Type type, MapGraphicsData& data);
 
     virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
 
   private:
-    gf::MessageStatus onCursorMovedPosition(gf::Id id, gf::Message *msg);
+    gf::MessageStatus onHeroPosition(gf::Id id, gf::Message *msg);
 
   private:
-    gf::TileLayer m_layer;
-    std::vector<gf::Sprite> m_sprites;
+    Type m_type;
+    MapGraphicsData& m_data;
+    gf::Vector2f m_hero;
   };
 }
 

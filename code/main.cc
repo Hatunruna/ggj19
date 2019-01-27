@@ -126,7 +126,10 @@ int main() {
   }
 
   home::SupplyManager supplies;
-  home::Map map(layers, supplies);
+  home::MapGraphicsData data(layers, supplies);
+  home::Map mapAbove(home::Map::Above, data);
+  home::Map mapBelow(home::Map::Below, data);
+
   home::FieldOfView fov;
   home::Player player;
   home::ClockHud clockHud;
@@ -141,7 +144,8 @@ int main() {
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
-  mainEntities.addEntity(map);
+  mainEntities.addEntity(mapAbove);
+  mainEntities.addEntity(mapBelow);
   mainEntities.addEntity(fov);
   mainEntities.addEntity(player);
   mainEntities.addEntity(supplies);
@@ -163,7 +167,7 @@ int main() {
     mainView.setCenter(positionHeroMessage->position);
     return gf::MessageStatus::Keep;
   });
-  
+
   bool isGameOver = false;
   home::gMessageManager().registerHandler<home::GameOver>([&isGameOver](gf::Id type, gf::Message *msg) {
     assert(type == home::GameOver::type);

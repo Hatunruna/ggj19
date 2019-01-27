@@ -3,6 +3,7 @@
 #include <gf/Coordinates.h>
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
+#include <gf/Sprite.h>
 #include <gf/Shapes.h>
 #include <gf/VectorOps.h>
 
@@ -18,7 +19,9 @@ namespace home {
   static constexpr float OxygenQuantity = 10.0f;
 
   SupplyManager::SupplyManager()
-  : m_heroLocation({0.0f, 0.0f}){
+  : gf::Entity(10)
+  , m_heroLocation({0.0f, 0.0f})
+  , m_supplySet(gResourceManager().getTexture("map/ResourceSet.png")) {
     gMessageManager().registerHandler<HeroPosition>(&SupplyManager::onHeroPosition, this);
   }
 
@@ -49,6 +52,10 @@ namespace home {
         message.resourceType = supply.type;
         message.quantity = quantity;
         gMessageManager().sendMessage(&message);
+
+        if (supply.type == SupplyType::Oxygen) {
+          supply.quantity += message.quantity;
+        }
       } else {
         if (supply.soundStarted) {
           supply.soundStarted = false;
@@ -64,9 +71,21 @@ namespace home {
   }
 
   void SupplyManager::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    static constexpr gf::Vector2f AssestSize = {128.0f, 128.0f};
+    static constexpr gf::Vector2f SetSize = {896.0f, 640.0f};
+
     gf::Coordinates coordinates(target);
 
     for (auto &supply: m_supplies) {
+      gf::Sprite sprite;
+      gf::RectF rect({static_cast<uint8_t>(supply.type) * AssestSize.width / SetSize.width, 0.0f}, AssestSize / SetSize);
+
+      sprite.setTexture(m_supplySet);
+      sprite.setTextureRect(rect);
+      sprite.setPosition(supply.position);
+      sprite.setAnchor(gf::Anchor::Center);
+      target.draw(sprite, states);
+
       // Life bar of supply
       float life = supply.quantity / supply.initialQuantity;
       if (life < 1.0f) {

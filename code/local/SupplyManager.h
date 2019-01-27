@@ -12,10 +12,10 @@
 #include "Singletons.h"
 
 namespace home {
-  enum class SupplyType {
-    Metal,
-    Oxygen,
-    Energy,
+  enum class SupplyType: uint8_t {
+    Energy = 0,
+    Metal = 1,
+    Oxygen = 2,
   };
 
   struct Supply {
@@ -59,6 +59,7 @@ namespace home {
   private:
     std::vector<Supply> m_supplies;
     gf::Vector2f m_heroLocation;
+    gf::Texture &m_supplySet;
   };
 }
 

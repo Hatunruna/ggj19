@@ -17,9 +17,9 @@ namespace home {
 
   ResourcesHud::ResourcesHud()
   : m_minerals(0)
-  , m_energy(17.0f)
-  , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png"))
-  , m_energyIcon(gResourceManager().getTexture("images/lungs.png"))
+  , m_energy(0.0f)
+  , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
+  , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
     gMessageManager().registerHandler<HarvestResource>(&ResourcesHud::onResourceHarvested, this);
   }
@@ -30,8 +30,11 @@ namespace home {
     // Position of the minerals hud
     static constexpr gf::Vector2f MineralsPosition = {0.95f, 0.80f};
     // Offset of the icon (to the left)
-    static constexpr float OffsetIconMinerals = 0.13f;
-    static constexpr float OffsetIconEnergy = 0.13f;
+    static constexpr float OffsetIconMineralsLeft = 0.13f;
+    static constexpr float OffsetIconEnergyLeft = 0.13f;
+// Offset of the icon (to the top)
+    static constexpr float OffsetIconMineralsTop = -0.02f;
+    static constexpr float OffsetIconEnergyTop = -0.02f;
     static constexpr float OffsetBar = 0.12f;
     // Relative vertical distance between the 2 elements of the HUD
     static constexpr float YDistance = 0.10f;
@@ -56,13 +59,13 @@ namespace home {
     mineralsIcon.setTexture(m_mineralsIcon);
     mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     mineralsIcon.setAnchor(gf::Anchor::CenterRight);
-    mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMinerals, MineralsPosition.y}));
+    mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMineralsLeft, MineralsPosition.y - OffsetIconMineralsTop}));
     mineralsIcon.setColor({1.0f, 0.0f, 1.0f, 1.0f});
 
     energyIcon.setTexture(m_energyIcon);
     energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     energyIcon.setAnchor(gf::Anchor::CenterRight);
-    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergy, MineralsPosition.y + YDistance}));
+    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y + YDistance  - OffsetIconEnergyTop}));
     energyIcon.setColor({0.0f, 1.0f, 0.0f, 1.0f});
 
     energyBackground.setColor(gf::Color::Black);
@@ -82,6 +85,14 @@ namespace home {
     target.draw(energyBackground, states);
     target.draw(energy, states);
   }
+
+  void ResourcesHud::update(gf::Time time) {
+    if (m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+      MaxResources info;
+      gMessageManager().sendMessage(&info);     
+    }
+  }
+
   gf::MessageStatus ResourcesHud::onResourceHarvested(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
     HarvestResource *message = static_cast<HarvestResource*>(msg);
@@ -92,7 +103,7 @@ namespace home {
         m_minerals += message->quantity;
       }
     } else if (message->resourceType == SupplyType::Energy) {
-      if (message->quantity + m_minerals > MaxEnergy) {
+      if (message->quantity + m_energy > MaxEnergy) {
         m_energy = MaxEnergy;
       } else {
         m_energy += message->quantity;
