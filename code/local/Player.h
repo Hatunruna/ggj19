@@ -34,6 +34,7 @@ namespace home {
       // Mouse click handler
       gf::MessageStatus onMouseClicked(gf::Id id, gf::Message *msg);
       gf::MessageStatus onHarvestResource(gf::Id id, gf::Message *msg);
+      gf::MessageStatus onGameOver(gf::Id id, gf::Message *msg);
 
     private:
       void loadAnimation(gf::Animation &animation, int line);
@@ -46,6 +47,9 @@ namespace home {
 
       sf::Sound m_jetSound;
       bool m_wasJetSound;
+
+      sf::Sound m_deathSound;
+      bool m_wasDeathSound;
 
       gf::Orientation m_orientation;
       bool m_moving;

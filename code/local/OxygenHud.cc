@@ -82,6 +82,7 @@ namespace home {
   void OxygenHud::update(gf::Time time) {
     // Low oxy limit for sound
     static constexpr float LowO2Limit = 30.0f;
+    static constexpr float SFXVol = 75.0f;
 
 
     if (m_oxygen > 0) {
@@ -89,7 +90,7 @@ namespace home {
     }
 
     if (m_oxygen <= LowO2Limit && m_oxygen > 0) {
-      m_lowO2Volume = 100.0f - m_oxygen * 3.0f;
+      m_lowO2Volume = SFXVol - m_oxygen * (3.0f * SFXVol / 100.0f);
       m_lowO2Sound.setVolume(m_lowO2Volume);
       if (!m_lowO2SoundStarted) {
         m_lowO2SoundStarted = true;
