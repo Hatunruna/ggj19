@@ -188,8 +188,8 @@ namespace home {
     assert(id == InfoSupplies::type);
     InfoSupplies *message = static_cast<InfoSupplies*>(msg);
 
-    m_energy = gf::clamp(message->cristalQuantity, 0.0f, MaxMinerals);
-    m_minerals = gf::clamp(message->metalQuantity, 0.0f, MaxEnergy);
+    m_energy = gf::clamp(message->cristalQuantity, 0.0f, MaxEnergy);
+    m_minerals = gf::clamp(message->metalQuantity, 0.0f, MaxMinerals);
 
     return gf::MessageStatus::Keep;
   }
