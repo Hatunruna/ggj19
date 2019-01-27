@@ -173,5 +173,4 @@ namespace home {
     m_hero = message->position;
     return gf::MessageStatus::Keep;
   }
-
 }

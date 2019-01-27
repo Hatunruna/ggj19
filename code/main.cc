@@ -14,6 +14,7 @@
 
 #include "local/CrashedShip.h"
 #include "local/ClockHud.h"
+#include "local/DisplayMessage.h"
 #include "local/FieldOfView.h"
 #include "local/Map.h"
 #include "local/Messages.h"
@@ -137,6 +138,7 @@ int main() {
   home::ClockHud clockHud;
   home::OxygenHud oxygenHud;
   home::ResourcesHud resourcesHud;
+  home::DisplayMessage displayMessage;
   home::CrashedShip ship;
 
   home::Physics physics(layers, player);
@@ -160,6 +162,7 @@ int main() {
   hudEntities.addEntity(clockHud);
   hudEntities.addEntity(oxygenHud);
   hudEntities.addEntity(resourcesHud);
+  hudEntities.addEntity(displayMessage);
 
 
 

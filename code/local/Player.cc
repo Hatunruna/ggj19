@@ -59,6 +59,7 @@ namespace home {
   , m_orientation(gf::Orientation::SouthEast)
   , m_moving(false)
   , m_overSupply(false)
+  , m_shipFound(false)
   , m_dead(false)
   , m_moveAndPauseTexture(gResourceManager().getTexture("images/player/player_animations.png"))
   , m_deathTexture(gResourceManager().getTexture("images/player/player_death.png"))
@@ -224,7 +225,13 @@ namespace home {
 
     // Update sprite
     m_currentAnimation->update(time);
-
+    if (!m_shipFound && m_position.x > 11020.0f && m_position.x < 11750.0f && m_position.y > 8480 && m_position.y < 9121) {
+      m_shipFound = true;
+      MessageToDisplay msg;
+      msg.message = "You found a spaceship!";
+      msg.displayTime = 4.0f;
+      gMessageManager().sendMessage(&msg);
+    }
     HeroPosition message;
     message.position = m_position;
     gMessageManager().sendMessage(&message);

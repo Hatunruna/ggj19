@@ -138,7 +138,7 @@ namespace home {
   gf::MessageStatus SupplyManager::onHeroPosition(gf::Id id, gf::Message *msg) {
     assert(id == HeroPosition::type);
     auto location = static_cast<HeroPosition*>(msg);
-
+    //gf::Log::info("Position: (%f, %f)\n", location->position.x, location->position.y);
     m_heroLocation = location->position;
 
     return gf::MessageStatus::Keep;
