@@ -270,6 +270,39 @@ namespace home {
 
       }
 
+      virtual void visitObjectLayer(const gf::TmxLayers& map, const gf::TmxObjectLayer& layer) override {
+        gf::Log::info("Parsing object layer '%s'\n", layer.name.c_str());
+
+        for (auto& object : layer.objects) {
+          if (object->kind != gf::TmxObject::Tile) {
+            continue;
+          }
+
+          auto tile = static_cast<gf::TmxTileObject *>(object.get());
+
+          if (layer.name == "Trees") {
+            gf::Vector2f position = tile->position + gf::Vector2f(384 / 2, -70);
+
+            b2BodyDef bodyDef;
+            bodyDef.type = b2_staticBody;
+            bodyDef.position = fromVec(position);
+            auto body = m_world.CreateBody(&bodyDef);
+
+            b2CircleShape shape;
+            shape.m_radius = 50.0f * PhysicsScale;
+
+            b2FixtureDef fixtureDef;
+            fixtureDef.density = 1.0f;
+            fixtureDef.friction = 0.0f;
+            fixtureDef.restitution = 0.0f;
+            fixtureDef.shape = &shape;
+
+            body->CreateFixture(&fixtureDef);
+          }
+
+        }
+      }
+
     private:
       b2World& m_world;
     };

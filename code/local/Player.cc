@@ -48,11 +48,11 @@ namespace home {
 
   Player::Player()
   : gf::Entity(100)
-  , m_position(TileSize * gf::Vector2f(41.0f, 91.0f))
-  , m_positionClicked(TileSize * gf::Vector2f(41.0f, 91.0f))
+  , m_position(TileSize * gf::Vector2f(45.0f, 42.0f))
+  , m_positionClicked(TileSize * gf::Vector2f(45.0f, 42.0f))
   , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
   , m_wasJetSound(false)
-  , m_orientation(gf::Orientation::East)
+  , m_orientation(gf::Orientation::SouthEast)
   , m_moving(false)
   , m_overSupply(false)
   , m_moveAndPauseTexture(gResourceManager().getTexture("images/player/player_animations.png"))
@@ -114,6 +114,9 @@ namespace home {
       m_velocity = (move / length) * Velocity;
       m_moving = true;
     } else {
+      if (m_overSupply) {
+        m_orientation = getHarvestOrientation(gf::angle(move));
+      }
       m_position += move;
       m_velocity = { 0.0f, 0.0f };
       m_moving = false;
@@ -145,7 +148,7 @@ namespace home {
           m_currentAnimation = &m_harvest_south_west;
           break;
         default:
-          //assert(false);
+          assert(false);
           break;
       }
     }
