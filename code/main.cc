@@ -1,3 +1,5 @@
+#include <thread>
+
 #include <gf/Action.h>
 #include <gf/Clock.h>
 #include <gf/Color.h>
@@ -26,6 +28,8 @@
 #include "local/Singletons.h"
 #include "local/SupplyManager.h"
 #include "config.h"
+
+using namespace std::literals;
 
 int main() {
   static constexpr gf::Vector2u ScreenSize(1024, 576);
@@ -82,6 +86,7 @@ int main() {
   sprite.scale(0.55f);
   renderer.draw(sprite);
   renderer.display();
+  std::this_thread::sleep_for(2s);
 
   // background music
   float bgmVol = 10.0f;
