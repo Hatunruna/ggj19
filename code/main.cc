@@ -62,6 +62,15 @@ int main() {
 
   views.setInitialScreenSize(ScreenSize);
 
+  // display splash screen
+  renderer.setView(hudView);
+  renderer.clear();
+  gf::Sprite sprite;
+  sprite.setTexture(home::gResourceManager().getTexture("images/home_page.jpg"));
+  sprite.scale(0.55f);
+  renderer.draw(sprite);
+  renderer.display();
+
   // background music
   float bgmVol = 10.0f;
   bool bgmMuted = true;
