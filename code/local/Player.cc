@@ -3,6 +3,7 @@
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
+#include <gf/Unused.h>
 #include <gf/VectorOps.h>
 
 #include "Singletons.h"
@@ -65,6 +66,8 @@ namespace home {
   , m_deathTexture(gResourceManager().getTexture("images/player/player_death.png"))
   , m_currentAnimation(nullptr)
   , m_crosshairTexture(gResourceManager().getTexture("crosshair.png"))
+  , m_gameOverImg(gResourceManager().getTexture("images/game_over.png"))
+  , m_gameOverAlpha(0.0f)
   {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
     gMessageManager().registerHandler<HarvestResource>(&Player::onHarvestResource, this);
@@ -116,6 +119,16 @@ namespace home {
     sprite.setPosition(m_position);
     sprite.setAnchor(gf::Anchor::Center);
     target.draw(sprite, states);
+
+    if (m_dead) {
+      gf::Sprite goSprite;
+      goSprite.setTexture(m_gameOverImg);
+      goSprite.setColor({1.0f, 1.0f, 1.0f, m_gameOverAlpha});
+      goSprite.setScale(0.55f);
+      goSprite.setAnchor(gf::Anchor::Center);
+      goSprite.setPosition(m_position);
+      target.draw(goSprite, states);
+    }
   }
 
   void Player::update(gf::Time time) {
@@ -233,18 +246,25 @@ namespace home {
 
     // Update sprite
     m_currentAnimation->update(time);
-    if (!m_shipFound && m_position.x > 11020.0f && m_position.x < 11750.0f && m_position.y > 8480 && m_position.y < 9121) {
+    if (!m_shipFound && m_position.x > 11020.0f && m_position.x < 11750.0f && m_position.y > 8480.0f && m_position.y < 9121.0f) {
       m_shipFound = true;
       MessageToDisplay msg;
       msg.message = "You found a spaceship!";
       msg.displayTime = 4.0f;
       gMessageManager().sendMessage(&msg);
     }
+    if (m_position.x > 11310.0f && m_position.x < 11685.0f && m_position.y < 8865.0f && m_position.y > 8680.0f) {
+      Victory msg;
+      gMessageManager().sendMessage(&msg);
+    }
     HeroPosition message;
     message.position = m_position;
     gMessageManager().sendMessage(&message);
-
     m_overSupply = false;
+
+    if (m_dead) {
+      m_gameOverAlpha = m_gameOverAlpha >= 1.0f ? 1.0f : m_gameOverAlpha + time.asSeconds();
+    }
   }
 
   gf::MessageStatus Player::onMouseClicked(gf::Id id, gf::Message *msg) {
@@ -257,6 +277,7 @@ namespace home {
 
   gf::MessageStatus Player::onHarvestResource(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
+    gf::unused(id, msg);
 
     m_overSupply = true;
 
@@ -265,6 +286,7 @@ namespace home {
 
   gf::MessageStatus Player::onGameOver(gf::Id id, gf::Message *msg) {
     assert(id == GameOver::type);
+    gf::unused(id, msg);
 
     if (!m_wasDeathSound) {
       m_deathSound.play();

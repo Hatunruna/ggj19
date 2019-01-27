@@ -7,6 +7,7 @@
 #include <gf/Sprite.h>
 #include <gf/StringUtils.h>
 #include <gf/Text.h>
+#include <gf/Unused.h>
 
 #include "Singletons.h"
 
@@ -85,6 +86,8 @@ namespace home {
   }
 
   void ResourcesHud::update(gf::Time time) {
+    gf::unused(time);
+
     if (!m_messageSended && m_cristalQuantity + m_metalQuantity >= LimitBackpack) {
       MessageToDisplay msg;
       msg.message = "Your inventory is full!";

@@ -9,6 +9,7 @@
 #include <gf/Log.h>
 #include <gf/RenderWindow.h>
 #include <gf/Singleton.h>
+#include <gf/Unused.h>
 #include <gf/ViewContainer.h>
 #include <gf/Views.h>
 #include <gf/Window.h>
@@ -37,7 +38,6 @@ int main() {
   static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
-  static constexpr float SFXVol = 75.0f;
 
   // initialization
 
@@ -109,30 +109,6 @@ int main() {
   fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
   actions.addAction(fullscreenAction);
 
-  gf::Action leftAction("Left");
-  leftAction.addScancodeKeyControl(gf::Scancode::A);
-  leftAction.addScancodeKeyControl(gf::Scancode::Left);
-  leftAction.setContinuous();
-  actions.addAction(leftAction);
-
-  gf::Action rightAction("Right");
-  rightAction.addScancodeKeyControl(gf::Scancode::D);
-  rightAction.addScancodeKeyControl(gf::Scancode::Right);
-  rightAction.setContinuous();
-  actions.addAction(rightAction);
-
-  gf::Action upAction("Up");
-  upAction.addScancodeKeyControl(gf::Scancode::W);
-  upAction.addScancodeKeyControl(gf::Scancode::Up);
-  upAction.setContinuous();
-  actions.addAction(upAction);
-
-  gf::Action downAction("Down");
-  downAction.addScancodeKeyControl(gf::Scancode::S);
-  downAction.addScancodeKeyControl(gf::Scancode::Down);
-  downAction.setContinuous();
-  actions.addAction(downAction);
-
   gf::Action muteBgmAction("Mute");
   muteBgmAction.addKeycodeKeyControl(gf::Keycode::M);
   actions.addAction(muteBgmAction);
@@ -202,9 +178,17 @@ int main() {
   });
 
   bool isGameOver = false;
+  bool isVictory = false;
   home::gMessageManager().registerHandler<home::GameOver>([&isGameOver](gf::Id type, gf::Message *msg) {
     assert(type == home::GameOver::type);
+    gf::unused(type, msg);
     isGameOver = true;
+    return gf::MessageStatus::Keep;
+  });
+
+  home::gMessageManager().registerHandler<home::Victory>([&isVictory](gf::Id type, gf::Message *msg) {
+    assert(type == home::Victory::type);
+    isVictory = true;
     return gf::MessageStatus::Keep;
   });
 
@@ -220,7 +204,7 @@ int main() {
     while (window.pollEvent(event)) {
       actions.processEvent(event);
       views.processEvent(event);
-      if (!isGameOver) {
+      if (!isGameOver && !isVictory) {
         switch (event.type) {
           case gf::EventType::MouseMoved:
           {
@@ -248,18 +232,6 @@ int main() {
 
     if (fullscreenAction.isActive()) {
       window.toggleFullscreen();
-    }
-
-    if (rightAction.isActive()) {
-      // do something
-    } else if (leftAction.isActive()) {
-      // do something
-    } else if (upAction.isActive()) {
-      // do something
-    } else if (downAction.isActive()) {
-      // do something
-    } else {
-      // do something
     }
 
     // Sound control
@@ -291,19 +263,33 @@ int main() {
     hudEntities.update(time);
     physics.update(time);
 
-
-    // 3. draw
-
     renderer.clear();
+    
+    // 3. draw
+    if (!isVictory) {
 
-    renderer.setView(mainView);
-    mainEntities.render(renderer);
+      renderer.setView(mainView);
+      mainEntities.render(renderer);
 
-    renderer.setView(hudView);
-    hudEntities.render(renderer);
+      renderer.setView(hudView);
+      hudEntities.render(renderer);
+
+    } else {
+      gf::Texture &texture = home::gResourceManager().getTexture("images/victory.jpg");  
+      gf::Vector2f scale = gf::Vector2f(renderer.getSize()) / gf::Vector2f(texture.getSize());  
+
+      gf::Sprite victory;
+      victory.setTexture(texture);
+      victory.scale(std::min(scale.x, scale.y));
+      victory.setAnchor(gf::Anchor::Center);
+      victory.setPosition(renderer.getSize() / 2);
+
+      renderer.setView(hudView);
+      renderer.draw(victory);        
+    }
 
     renderer.display();
-
+    
     actions.reset();
   }
 

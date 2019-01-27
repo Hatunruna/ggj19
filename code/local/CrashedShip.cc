@@ -2,7 +2,6 @@
 
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
-#include <gf/Shapes.h>
 
 #include "Messages.h"
 #include "Singletons.h"
@@ -11,6 +10,8 @@ namespace home {
   static constexpr float OxygenHarvestSpeed = 6.0f; // 6 unit / sec;
   static constexpr float OxygenQuantity = 1000.0f;
   static constexpr float UnloadSpeed = 1.0f; // 1 u / s
+  static constexpr float MaxMinerals = 8000.0f; // 8000
+  static constexpr float MaxEnergy = 9000.0f; // 9000
 
   CrashedShip::CrashedShip()
   : m_hitbox({5318.0f, 2350.0f}, {350.0f, 200.0f})
@@ -21,17 +22,15 @@ namespace home {
     gMessageManager().registerHandler<HeroPosition>(&CrashedShip::onHeroPosition, this);
   }
 
-  // void CrashedShip::render(gf::RenderTarget& target, const gf::RenderStates& states) {
-  //   gf::RectangleShape rectangle;
-  //
-  //   rectangle.setColor(gf::Color::Gray());
-  //   rectangle.setPosition(m_hitbox.getTopLeft());
-  //   rectangle.setSize(m_hitbox.getSize());
-  //   target.draw(rectangle, states);
-  // }
+  void CrashedShip::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+  }
 
   void CrashedShip::update(gf::Time time) {
     if (m_hitbox.contains(m_heroLocation)) {
+      if (m_cristalQuantity >= MaxEnergy && m_metalQuantity >= MaxMinerals) {
+        Victory msg;
+        gMessageManager().sendMessage(&msg);
+      }
       // Reffil oxygen
       float quantity = OxygenHarvestSpeed * time.asSeconds();
       if (m_oxygenLevel - quantity < 0.0f) {

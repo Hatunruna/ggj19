@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 1.0f; // 0.1f
+  static constexpr float OxygenLoss = 1.0f; // 1.0f
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -65,10 +65,10 @@ namespace home {
       target.draw(oxygenBackground, states);
       target.draw(oxygen, states);
     } else {
-      MessageToDisplay msg;
-      msg.message = "Game Over";
-      msg.displayTime = 3.0f;
-      gMessageManager().sendMessage(&msg);
+    //   MessageToDisplay msg;
+    //   msg.message = "Game Over";
+    //   msg.displayTime = 3.0f;
+    //   gMessageManager().sendMessage(&msg);
       m_gameOver = false;
     }
   }

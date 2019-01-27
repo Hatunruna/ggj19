@@ -5,12 +5,13 @@
 #include <gf/Message.h>
 #include <gf/Rect.h>
 
+
 namespace home {
   class CrashedShip: public gf::Entity {
   public:
     CrashedShip();
 
-    // virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+    virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
     virtual void update(gf::Time time) override;
 
     gf::MessageStatus onHeroPosition(gf::Id id, gf::Message *msg);
