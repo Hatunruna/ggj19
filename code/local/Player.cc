@@ -3,6 +3,7 @@
 #include <gf/Log.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
+#include <gf/Unused.h>
 #include <gf/VectorOps.h>
 
 #include "Singletons.h"
@@ -273,6 +274,7 @@ namespace home {
 
   gf::MessageStatus Player::onHarvestResource(gf::Id id, gf::Message *msg) {
     assert(id == HarvestResource::type);
+    gf::unused(id, msg);
 
     m_overSupply = true;
 
@@ -281,6 +283,7 @@ namespace home {
 
   gf::MessageStatus Player::onGameOver(gf::Id id, gf::Message *msg) {
     assert(id == GameOver::type);
+    gf::unused(id, msg);
 
     if (!m_wasDeathSound) {
       m_deathSound.play();

@@ -10,6 +10,7 @@
 #include <gf/Polyline.h>
 #include <gf/RenderTarget.h>
 #include <gf/Shapes.h>
+#include <gf/Unused.h>
 #include <gf/VectorOps.h>
 
 namespace home {
@@ -271,6 +272,8 @@ namespace home {
       }
 
       virtual void visitObjectLayer(const gf::TmxLayers& map, const gf::TmxObjectLayer& layer) override {
+        gf::unused(map);
+
         gf::Log::info("Parsing object layer '%s'\n", layer.name.c_str());
 
         for (auto& object : layer.objects) {
@@ -497,7 +500,7 @@ namespace home {
   }
 
   void PhysicsDraw::DrawPoint(const b2Vec2& p, float32 size, const b2Color& color) {
-
+    gf::unused(p, size, color);
   }
 
 }

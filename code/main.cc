@@ -9,6 +9,7 @@
 #include <gf/Log.h>
 #include <gf/RenderWindow.h>
 #include <gf/Singleton.h>
+#include <gf/Unused.h>
 #include <gf/ViewContainer.h>
 #include <gf/Views.h>
 #include <gf/Window.h>
@@ -37,7 +38,6 @@ int main() {
   static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
-  static constexpr float SFXVol = 75.0f;
 
   // initialization
 
@@ -108,30 +108,6 @@ int main() {
   gf::Action fullscreenAction("Fullscreen");
   fullscreenAction.addKeycodeKeyControl(gf::Keycode::F);
   actions.addAction(fullscreenAction);
-
-  gf::Action leftAction("Left");
-  leftAction.addScancodeKeyControl(gf::Scancode::A);
-  leftAction.addScancodeKeyControl(gf::Scancode::Left);
-  leftAction.setContinuous();
-  actions.addAction(leftAction);
-
-  gf::Action rightAction("Right");
-  rightAction.addScancodeKeyControl(gf::Scancode::D);
-  rightAction.addScancodeKeyControl(gf::Scancode::Right);
-  rightAction.setContinuous();
-  actions.addAction(rightAction);
-
-  gf::Action upAction("Up");
-  upAction.addScancodeKeyControl(gf::Scancode::W);
-  upAction.addScancodeKeyControl(gf::Scancode::Up);
-  upAction.setContinuous();
-  actions.addAction(upAction);
-
-  gf::Action downAction("Down");
-  downAction.addScancodeKeyControl(gf::Scancode::S);
-  downAction.addScancodeKeyControl(gf::Scancode::Down);
-  downAction.setContinuous();
-  actions.addAction(downAction);
 
   gf::Action muteBgmAction("Mute");
   muteBgmAction.addKeycodeKeyControl(gf::Keycode::M);
@@ -204,6 +180,7 @@ int main() {
   bool isGameOver = false;
   home::gMessageManager().registerHandler<home::GameOver>([&isGameOver](gf::Id type, gf::Message *msg) {
     assert(type == home::GameOver::type);
+    gf::unused(type, msg);
     isGameOver = true;
     return gf::MessageStatus::Keep;
   });
@@ -248,18 +225,6 @@ int main() {
 
     if (fullscreenAction.isActive()) {
       window.toggleFullscreen();
-    }
-
-    if (rightAction.isActive()) {
-      // do something
-    } else if (leftAction.isActive()) {
-      // do something
-    } else if (upAction.isActive()) {
-      // do something
-    } else if (downAction.isActive()) {
-      // do something
-    } else {
-      // do something
     }
 
     // Sound control
