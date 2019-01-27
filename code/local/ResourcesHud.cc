@@ -20,14 +20,13 @@ namespace home {
   ResourcesHud::ResourcesHud()
   : m_minerals(0.0f)
   , m_energy(0.0f)
-  , m_messageDisplayed(false)
-  , m_displayable(true)
   , m_backpackIcon(gResourceManager().getTexture("images/inventory_full_icon.png"))
   , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
   , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf"))
   , m_cristalQuantity(0.0f)
-  , m_metalQuantity(0.0f)  {
+  , m_metalQuantity(0.0f)
+  , m_messageSended(false) {
     gMessageManager().registerHandler<HarvestResource>(&ResourcesHud::onResourceHarvested, this);
     gMessageManager().registerHandler<UnloadBackpack>(&ResourcesHud::onUnloadBackpack, this);
     gMessageManager().registerHandler<InfoSupplies>(&ResourcesHud::onInfoSupplies, this);
@@ -55,13 +54,6 @@ namespace home {
     gf::Coordinates coordinates(target);
     gf::Text text;
 
-    if (m_messageDisplayed) {
-      MessageToDisplay msg;
-      msg.message = "Your inventory is full!";
-      msg.displayTime = 4.0f;
-      gMessageManager().sendMessage(&msg);
-      m_displayable = false;
-    }
     float backpackLoad = m_cristalQuantity + m_metalQuantity;
 
     backpackIcon.setTexture(m_backpackIcon);
@@ -121,26 +113,16 @@ namespace home {
     target.draw(energyIcon, states);
     target.draw(energyBackground, states);
     target.draw(energy, states);
+  }
 
-    gf::Text shipText;
-
-    if (m_messageDisplayed) {
+  void ResourcesHud::update(gf::Time time) {
+    if (!m_messageSended && m_cristalQuantity + m_metalQuantity >= LimitBackpack) {
       MessageToDisplay msg;
       msg.message = "Your inventory is full!";
       msg.displayTime = 4.0f;
       gMessageManager().sendMessage(&msg);
-      m_displayable = false;
-    }
-  }
 
-  void ResourcesHud::update(gf::Time time) {
-    if (m_displayable && m_cristalQuantity + m_metalQuantity >= LimitBackpack) {
-      m_messageDisplayed = true;
-      MaxResources info;
-      gMessageManager().sendMessage(&info);
-    }
-    if (m_messageDisplayed) {
-      m_time += time;
+      m_messageSended = true;
     }
   }
 
@@ -180,6 +162,8 @@ namespace home {
 
     m_cristalQuantity -= message->cristalQuantity;
     m_metalQuantity -= message->metalQuantity;
+
+    m_messageSended = false;
 
     return gf::MessageStatus::Keep;
   }
