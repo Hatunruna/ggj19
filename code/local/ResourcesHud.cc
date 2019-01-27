@@ -21,6 +21,7 @@ namespace home {
   : m_minerals(0.0f)
   , m_energy(0.0f)
   , m_messageDisplayed(false)
+  , m_backpackIcon(gResourceManager().getTexture("images/inventory_full_icon.png"))
   , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
   , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf"))
@@ -56,11 +57,10 @@ namespace home {
     gf::Text text;
     float backpackLoad = m_cristalQuantity + m_metalQuantity;
 
-    backpackIcon.setTexture(m_energyIcon);
+    backpackIcon.setTexture(m_backpackIcon);
     backpackIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
     backpackIcon.setAnchor(gf::Anchor::CenterRight);
     backpackIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y - YDistance}));
-    backpackIcon.setColor({0.0f, 0.0f, 1.0f, 1.0f});
 
     backpackBackground.setColor(gf::Color::Black);
     backpackBackground.setOutlineColor(gf::Color::Black);

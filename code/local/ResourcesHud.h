@@ -23,6 +23,7 @@ namespace home {
     float m_energy;
     gf::Time m_time;
     bool m_messageDisplayed;
+    gf::Texture &m_backpackIcon;
     gf::Texture &m_mineralsIcon;
     gf::Texture &m_energyIcon;
     gf::Font &m_font;
