@@ -60,13 +60,13 @@ namespace home {
     mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     mineralsIcon.setAnchor(gf::Anchor::CenterRight);
     mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMineralsLeft, MineralsPosition.y - OffsetIconMineralsTop}));
-    mineralsIcon.setColor({1.0f, 0.0f, 1.0f, 1.0f});
+    mineralsIcon.setColor({0.5f, 0.5f, 0.5f, 1.0f});
 
     energyIcon.setTexture(m_energyIcon);
     energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
     energyIcon.setAnchor(gf::Anchor::CenterRight);
     energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y + YDistance  - OffsetIconEnergyTop}));
-    energyIcon.setColor({0.0f, 1.0f, 0.0f, 1.0f});
+    energyIcon.setColor({1.0f, 1.0f, 0.0f, 1.0f});
 
     energyBackground.setColor(gf::Color::Black);
     energyBackground.setOutlineColor(gf::Color::Black);
