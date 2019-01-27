@@ -22,14 +22,13 @@ namespace home {
     float m_minerals;
     float m_energy;
     gf::Time m_time;
-    bool m_messageDisplayed;
-    bool m_displayable;
     gf::Texture &m_backpackIcon;
     gf::Texture &m_mineralsIcon;
     gf::Texture &m_energyIcon;
     gf::Font &m_font;
     float m_cristalQuantity;
     float m_metalQuantity;
+    bool m_messageSended;
   };
 }
 
