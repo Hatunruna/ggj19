@@ -15,9 +15,11 @@ namespace home {
   static constexpr int MaxMinerals = 100;
   static constexpr float MaxEnergy = 100.0f;
 
+
   ResourcesHud::ResourcesHud()
   : m_minerals(0)
   , m_energy(0.0f)
+  , m_messageDisplayed(false)
   , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
   , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
@@ -39,12 +41,28 @@ namespace home {
     // Relative vertical distance between the 2 elements of the HUD
     static constexpr float YDistance = 0.10f;
     // Scale of the oxygen icon
-    static constexpr float scale = 7500.0f;
+    static constexpr float Scale = 7500.0f;
+    // Display time of popup message
+    static constexpr float DisplayTime = 3.0f;
 
     gf::Sprite mineralsIcon, energyIcon; // Icons
     gf::RectangleShape energyBackground, energy; // Energy bar
     gf::Coordinates coordinates(target);
-    gf::Text text;
+    gf::Text text, shipText;
+
+    if (m_messageDisplayed && m_time.asSeconds() < DisplayTime) {
+      shipText.setFont(m_font);
+      shipText.setColor({0.0, 0.0, 0.0, 1.0 - m_time.asSeconds() / DisplayTime});
+      shipText.setOutlineColor({1.0, 1.0, 1.0, 1.0 - m_time.asSeconds() / DisplayTime});
+      shipText.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
+      shipText.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
+      shipText.setString("Your inventory is full!");
+      shipText.setParagraphWidth(target.getSize().x);
+      shipText.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
+      shipText.setAlignment(gf::Alignment::Center);
+      shipText.setAnchor(gf::Anchor::Center);
+      target.draw(shipText, states);
+    }
 
     text.setFont(m_font);
     text.setOutlineColor(gf::Color::White);
@@ -57,13 +75,13 @@ namespace home {
     text.setAlignment(gf::Alignment::Center);
 
     mineralsIcon.setTexture(m_mineralsIcon);
-    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
+    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
     mineralsIcon.setAnchor(gf::Anchor::CenterRight);
     mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMineralsLeft, MineralsPosition.y - OffsetIconMineralsTop}));
     mineralsIcon.setColor({0.5f, 0.5f, 0.5f, 1.0f});
 
     energyIcon.setTexture(m_energyIcon);
-    energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
+    energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
     energyIcon.setAnchor(gf::Anchor::CenterRight);
     energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y + YDistance  - OffsetIconEnergyTop}));
     energyIcon.setColor({1.0f, 1.0f, 0.0f, 1.0f});
@@ -88,8 +106,12 @@ namespace home {
 
   void ResourcesHud::update(gf::Time time) {
     if (m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+      m_messageDisplayed = true;
       MaxResources info;
-      gMessageManager().sendMessage(&info);     
+      gMessageManager().sendMessage(&info);
+    }
+    if (m_messageDisplayed) {
+      m_time += time;
     }
   }
 
