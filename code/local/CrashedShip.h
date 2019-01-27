@@ -4,7 +4,7 @@
 #include <gf/Entity.h>
 #include <gf/Message.h>
 #include <gf/Rect.h>
-#include <gf/Texture.h>
+
 
 namespace home {
   class CrashedShip: public gf::Entity {
@@ -22,7 +22,6 @@ namespace home {
     float m_oxygenLevel;
     float m_cristalQuantity;
     float m_metalQuantity;
-    gf::Texture &m_victory;
   };
 }
 
