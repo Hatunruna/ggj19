@@ -13,14 +13,20 @@
 namespace home {
   class Player : public gf::Entity {
     public :
+      struct Dynamics {
+        gf::Vector2f position;
+        gf::Vector2f velocity;
+      };
+
       Player();
 
-      void setPosition(gf::Vector2f position) {
-        m_position = position;
+      void setDynamics(const Dynamics& dynamics) {
+        m_position = dynamics.position;
+        m_velocity = dynamics.velocity;
       }
 
-      gf::Vector2f getPosition() const {
-        return m_position;
+      Dynamics getDynamics() const {
+        return { m_position, m_velocity };
       }
 
       virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
@@ -35,6 +41,8 @@ namespace home {
     private :
       gf::Vector2f m_position; // Current position of the player
       gf::Vector2f m_positionClicked; // Where the mouse was last clicked
+
+      gf::Vector2f m_velocity;
 
       sf::Sound m_jetSound;
       bool m_wasJetSound;

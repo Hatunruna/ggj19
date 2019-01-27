@@ -285,7 +285,7 @@ namespace home {
     PhysicsMaker maker(m_world);
     layers.visitLayers(maker);
 
-    gf::Vector2f initialPosition = m_player.getPosition();
+    gf::Vector2f initialPosition = m_player.getDynamics().position;
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -313,15 +313,15 @@ namespace home {
   }
 
   void Physics::update(gf::Time time) {
-    gf::Vector2f position = m_player.getPosition();
-    m_hero->SetTransform(fromVec(position), 0.0f);
+    auto dynamics = m_player.getDynamics();
+    m_hero->SetTransform(fromVec(dynamics.position), 0.0f);
+    m_hero->SetLinearVelocity(fromVec(dynamics.velocity));
 
     static constexpr int32 VelocityIterations = 10; // 6;
     static constexpr int32 PositionIterations = 8; // 2;
     m_world.Step(time.asSeconds(), VelocityIterations, PositionIterations);
 
-    auto nextPosition = m_hero->GetPosition();
-    m_player.setPosition(toVec(nextPosition));
+    m_player.setDynamics({ toVec(m_hero->GetPosition()), toVec(m_hero->GetLinearVelocity()) });
   }
 
   /*

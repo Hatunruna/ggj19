@@ -137,7 +137,7 @@ int main() {
   home::PhysicsDebugger debugger(physics);
   home::PhysicsDraw draw(debugger);
 
-  physics.setDraw(&draw);
+//   physics.setDraw(&draw);
 
   gf::EntityContainer mainEntities;
   // add entities to mainEntities
@@ -163,7 +163,7 @@ int main() {
     mainView.setCenter(positionHeroMessage->position);
     return gf::MessageStatus::Keep;
   });
-  
+
   bool isGameOver = false;
   home::gMessageManager().registerHandler<home::GameOver>([&isGameOver](gf::Id type, gf::Message *msg) {
     assert(type == home::GameOver::type);
