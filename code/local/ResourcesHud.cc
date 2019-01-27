@@ -15,9 +15,11 @@ namespace home {
   static constexpr int MaxMinerals = 100;
   static constexpr float MaxEnergy = 100.0f;
 
+
   ResourcesHud::ResourcesHud()
   : m_minerals(0)
   , m_energy(0.0f)
+  , m_messageDisplayed(false)
   , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_energyIcon(gResourceManager().getTexture("images/lungs.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
@@ -41,7 +43,20 @@ namespace home {
     gf::Sprite mineralsIcon, energyIcon; // Icons
     gf::RectangleShape energyBackground, energy; // Energy bar
     gf::Coordinates coordinates(target);
-    gf::Text text;
+    gf::Text text, shipText;
+
+    if (m_messageDisplayed && m_time.asSeconds() < 5.0f) {
+      shipText.setFont(m_font);
+      shipText.setOutlineColor(gf::Color::White);
+      shipText.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
+      shipText.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
+      shipText.setString("Go to your ship!");
+      shipText.setParagraphWidth(target.getSize().x);
+      shipText.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
+      shipText.setAlignment(gf::Alignment::Center);
+      shipText.setAnchor(gf::Anchor::Center);
+      target.draw(shipText, states);
+    }
 
     text.setFont(m_font);
     text.setOutlineColor(gf::Color::White);
@@ -85,8 +100,12 @@ namespace home {
 
   void ResourcesHud::update(gf::Time time) {
     if (m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+      m_messageDisplayed = true;
       MaxResources info;
-      gMessageManager().sendMessage(&info);     
+      gMessageManager().sendMessage(&info);
+    }
+    if (m_messageDisplayed) {
+      m_time += time;
     }
   }
 
