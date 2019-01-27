@@ -30,6 +30,7 @@ int main() {
   static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
+  static constexpr float SFXVol = 75.0f;
 
   // initialization
 
