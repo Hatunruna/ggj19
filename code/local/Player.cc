@@ -114,6 +114,9 @@ namespace home {
       m_velocity = (move / length) * Velocity;
       m_moving = true;
     } else {
+      if (m_overSupply) {
+        m_orientation = getHarvestOrientation(gf::angle(move));
+      }
       m_position += move;
       m_velocity = { 0.0f, 0.0f };
       m_moving = false;
