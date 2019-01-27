@@ -52,6 +52,10 @@ namespace home {
         message.resourceType = supply.type;
         message.quantity = quantity;
         gMessageManager().sendMessage(&message);
+
+        if (supply.type == SupplyType::Oxygen) {
+          supply.quantity += message.quantity;
+        }
       } else {
         if (supply.soundStarted) {
           supply.soundStarted = false;

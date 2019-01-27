@@ -77,9 +77,6 @@ namespace home {
             continue;
           }
 
-          if (isResources) {
-
-          }
           auto tile = static_cast<gf::TmxTileObject *>(object.get());
 
           auto tileset = map.getTileSetFromGID(tile->gid);
@@ -153,15 +150,17 @@ namespace home {
       }
     }
 
+    float limit = m_hero.y + 70;
+
     if (m_type == Below) {
       for (auto& sprite : m_data.sprites) {
-        if (sprite.getPosition().y < m_hero.y) {
+        if (sprite.getPosition().y < limit) {
           target.draw(sprite, states);
         }
       }
     } else {
       for (auto& sprite : m_data.sprites) {
-        if (sprite.getPosition().y >= m_hero.y) {
+        if (sprite.getPosition().y >= limit) {
           target.draw(sprite, states);
         }
       }
