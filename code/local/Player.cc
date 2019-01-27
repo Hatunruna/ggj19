@@ -265,6 +265,8 @@ namespace home {
 
     m_currentAnimation = &m_death;
     m_dead = true;
+    m_positionClicked = m_position;
+    m_velocity = {0.0f, 0.0f};
 
     return gf::MessageStatus::Keep;
   }
