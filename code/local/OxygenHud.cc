@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 1.0f; // 0.01f
+  static constexpr float OxygenLoss = 5.0f; // 0.01f
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -22,6 +22,7 @@ namespace home {
   , m_lowO2Volume(0.0f)
   , m_lowO2SoundStarted(false)
   , m_gameOver(false)
+  , m_gameFinished(false)
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
     gMessageManager().registerHandler<HarvestResource>(&OxygenHud::onOxygenHarvested, this);
     m_lowO2Sound.setLoop(true);
@@ -64,18 +65,11 @@ namespace home {
       target.draw(oxygenBackground, states);
       target.draw(oxygen, states);
     } else {
-      gf::Text text;
-
-      text.setFont(m_font);
-      text.setOutlineColor(gf::Color::White);
-      text.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
-      text.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
-      text.setString("Game Over");
-      text.setParagraphWidth(target.getSize().x);
-      text.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
-      text.setAlignment(gf::Alignment::Center);
-      text.setAnchor(gf::Anchor::Center);
-      target.draw(text, states);
+      MessageToDisplay msg;
+      msg.message = "Game Over";
+      msg.displayTime = 3.0f;
+      gMessageManager().sendMessage(&msg);
+      m_gameOver = false;
     }
   }
 
@@ -101,10 +95,11 @@ namespace home {
       m_lowO2Sound.stop();
     }
 
-    if (m_oxygen < 0) {
+    if (!m_gameFinished & m_oxygen < 0) {
       m_gameOver = true;
       GameOver info;
       gMessageManager().sendMessage(&info);
+      m_gameFinished = true;
     }
   }
 

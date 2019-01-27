@@ -50,6 +50,7 @@ namespace home {
       gf::Orientation m_orientation;
       bool m_moving;
       bool m_overSupply;
+      bool m_shipFound;
 
       gf::Texture &m_moveAndPauseTexture;
 

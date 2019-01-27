@@ -43,6 +43,16 @@ namespace home {
   struct MaxResources: public gf::Message {
     static const gf::Id type = "MaxResources"_id;
   };
+
+  struct Victory: public gf::Message {
+    static const gf::Id type = "Victory"_id;
+  };
+
+  struct MessageToDisplay: public gf::Message {
+    static const gf::Id type = "MessageToDisplay"_id;
+    std::string message;
+    float displayTime;
+  };
 }
 
 #endif // HOME_MESSAGES_H

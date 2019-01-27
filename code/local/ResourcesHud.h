@@ -18,6 +18,7 @@ namespace home {
       int m_minerals;
       float m_energy;
       bool m_messageDisplayed;
+      bool m_displayable;
       gf::Time m_time;
       gf::Texture &m_mineralsIcon;
       gf::Texture &m_energyIcon;

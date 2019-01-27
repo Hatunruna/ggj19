@@ -20,6 +20,7 @@ namespace home {
   : m_minerals(0)
   , m_energy(0.0f)
   , m_messageDisplayed(false)
+  , m_displayable(true)
   , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
   , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf")) {
@@ -34,7 +35,7 @@ namespace home {
     // Offset of the icon (to the left)
     static constexpr float OffsetIconMineralsLeft = 0.13f;
     static constexpr float OffsetIconEnergyLeft = 0.13f;
-// Offset of the icon (to the top)
+    // Offset of the icon (to the top)
     static constexpr float OffsetIconMineralsTop = -0.02f;
     static constexpr float OffsetIconEnergyTop = -0.02f;
     static constexpr float OffsetBar = 0.12f;
@@ -42,26 +43,18 @@ namespace home {
     static constexpr float YDistance = 0.10f;
     // Scale of the oxygen icon
     static constexpr float Scale = 7500.0f;
-    // Display time of popup message
-    static constexpr float DisplayTime = 3.0f;
 
     gf::Sprite mineralsIcon, energyIcon; // Icons
     gf::RectangleShape energyBackground, energy; // Energy bar
     gf::Coordinates coordinates(target);
-    gf::Text text, shipText;
+    gf::Text text;
 
-    if (m_messageDisplayed && m_time.asSeconds() < DisplayTime) {
-      shipText.setFont(m_font);
-      shipText.setColor({0.0, 0.0, 0.0, 1.0 - m_time.asSeconds() / DisplayTime});
-      shipText.setOutlineColor({1.0, 1.0, 1.0, 1.0 - m_time.asSeconds() / DisplayTime});
-      shipText.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
-      shipText.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
-      shipText.setString("Your inventory is full!");
-      shipText.setParagraphWidth(target.getSize().x);
-      shipText.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
-      shipText.setAlignment(gf::Alignment::Center);
-      shipText.setAnchor(gf::Anchor::Center);
-      target.draw(shipText, states);
+    if (m_messageDisplayed) {
+      MessageToDisplay msg;
+      msg.message = "Your inventory is full!";
+      msg.displayTime = 4.0f;
+      gMessageManager().sendMessage(&msg);
+      m_displayable = false;
     }
 
     text.setFont(m_font);
@@ -105,7 +98,8 @@ namespace home {
   }
 
   void ResourcesHud::update(gf::Time time) {
-    if (m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+    if (m_displayable && m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+      gf::Log::debug("went here\n");
       m_messageDisplayed = true;
       MaxResources info;
       gMessageManager().sendMessage(&info);
