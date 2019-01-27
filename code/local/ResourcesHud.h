@@ -11,7 +11,6 @@ namespace home {
   class ResourcesHud : public gf::Entity {
   public :
     ResourcesHud();
-
     virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
     virtual void update(gf::Time time) override;
 
@@ -22,6 +21,8 @@ namespace home {
   private :
     float m_minerals;
     float m_energy;
+    gf::Time m_time;
+    bool m_messageDisplayed;
     gf::Texture &m_mineralsIcon;
     gf::Texture &m_energyIcon;
     gf::Font &m_font;

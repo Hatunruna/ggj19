@@ -16,11 +16,13 @@ namespace home {
   static constexpr float MaxEnergy = 100.0f;
   static constexpr float LimitBackpack = 20.0f;
 
+
   ResourcesHud::ResourcesHud()
   : m_minerals(0.0f)
   , m_energy(0.0f)
-  , m_mineralsIcon(gResourceManager().getTexture("images/lungs.png"))
-  , m_energyIcon(gResourceManager().getTexture("images/lungs.png"))
+  , m_messageDisplayed(false)
+  , m_mineralsIcon(gResourceManager().getTexture("images/metal_icon.png"))
+  , m_energyIcon(gResourceManager().getTexture("images/energy_icon.png"))
   , m_font(gResourceManager().getFont("fonts/dejavu_sans.ttf"))
   , m_cristalQuantity(0.0f)
   , m_metalQuantity(0.0f)  {
@@ -35,13 +37,18 @@ namespace home {
     // Position of the minerals hud
     static constexpr gf::Vector2f MineralsPosition = {0.95f, 0.80f};
     // Offset of the icon (to the left)
-    static constexpr float OffsetIconMinerals = 0.13f;
-    static constexpr float OffsetIconEnergy = 0.13f;
+    static constexpr float OffsetIconMineralsLeft = 0.13f;
+    static constexpr float OffsetIconEnergyLeft = 0.13f;
+// Offset of the icon (to the top)
+    static constexpr float OffsetIconMineralsTop = -0.02f;
+    static constexpr float OffsetIconEnergyTop = -0.02f;
     static constexpr float OffsetBar = 0.12f;
     // Relative vertical distance between the 2 elements of the HUD
     static constexpr float YDistance = 0.10f;
     // Scale of the oxygen icon
-    static constexpr float scale = 7500.0f;
+    static constexpr float Scale = 3000.0f;
+    // Display time of popup message
+    static constexpr float DisplayTime = 3.0f;
 
     gf::Sprite mineralsIcon, energyIcon, backpackIcon; // Icons
     gf::RectangleShape energyBackground, energy, backpackBackground, backpack; // Energy bar
@@ -50,9 +57,9 @@ namespace home {
     float backpackLoad = m_cristalQuantity + m_metalQuantity;
 
     backpackIcon.setTexture(m_energyIcon);
-    backpackIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
+    backpackIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
     backpackIcon.setAnchor(gf::Anchor::CenterRight);
-    backpackIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergy, MineralsPosition.y - YDistance}));
+    backpackIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y - YDistance}));
     backpackIcon.setColor({0.0f, 0.0f, 1.0f, 1.0f});
 
     backpackBackground.setColor(gf::Color::Black);
@@ -77,16 +84,16 @@ namespace home {
     text.setAlignment(gf::Alignment::Center);
 
     mineralsIcon.setTexture(m_mineralsIcon);
-    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
+    mineralsIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
     mineralsIcon.setAnchor(gf::Anchor::CenterRight);
-    mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMinerals, MineralsPosition.y}));
-    mineralsIcon.setColor({1.0f, 0.0f, 1.0f, 1.0f});
+    mineralsIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconMineralsLeft, MineralsPosition.y - OffsetIconMineralsTop}));
+    mineralsIcon.setColor({0.5f, 0.5f, 0.5f, 1.0f});
 
     energyIcon.setTexture(m_energyIcon);
-    energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / scale);
+    energyIcon.setScale(coordinates.getRelativeSize({1.0f, 1.0f}).y / Scale);
     energyIcon.setAnchor(gf::Anchor::CenterRight);
-    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergy, MineralsPosition.y + YDistance}));
-    energyIcon.setColor({0.0f, 1.0f, 0.0f, 1.0f});
+    energyIcon.setPosition(coordinates.getRelativeSize({MineralsPosition.x - OffsetIconEnergyLeft, MineralsPosition.y + YDistance  - OffsetIconEnergyTop}));
+    energyIcon.setColor({1.0f, 1.0f, 0.0f, 1.0f});
 
     energyBackground.setColor(gf::Color::Black);
     energyBackground.setOutlineColor(gf::Color::Black);
@@ -107,12 +114,32 @@ namespace home {
     target.draw(energyIcon, states);
     target.draw(energyBackground, states);
     target.draw(energy, states);
+
+    gf::Text shipText;
+
+    if (m_messageDisplayed && m_time.asSeconds() < DisplayTime) {
+      shipText.setFont(m_font);
+      shipText.setColor({0.0, 0.0, 0.0, 1.0 - m_time.asSeconds() / DisplayTime});
+      shipText.setOutlineColor({1.0, 1.0, 1.0, 1.0 - m_time.asSeconds() / DisplayTime});
+      shipText.setOutlineThickness(coordinates.getRelativeCharacterSize(0.008f));
+      shipText.setCharacterSize(coordinates.getRelativeCharacterSize(0.1f));
+      shipText.setString("Your inventory is full!");
+      shipText.setParagraphWidth(target.getSize().x);
+      shipText.setPosition(coordinates.getRelativeSize({0.5f, 0.5f}));
+      shipText.setAlignment(gf::Alignment::Center);
+      shipText.setAnchor(gf::Anchor::Center);
+      target.draw(shipText, states);
+    }
   }
 
   void ResourcesHud::update(gf::Time time) {
     if (m_minerals >= MaxMinerals && m_energy >= MaxEnergy) {
+      m_messageDisplayed = true;
       MaxResources info;
       gMessageManager().sendMessage(&info);
+    }
+    if (m_messageDisplayed) {
+      m_time += time;
     }
   }
 
@@ -160,8 +187,8 @@ namespace home {
     assert(id == InfoSupplies::type);
     InfoSupplies *message = static_cast<InfoSupplies*>(msg);
 
-    m_minerals = gf::clamp(message->cristalQuantity, 0.0f, MaxMinerals);
-    m_energy = gf::clamp(message->metalQuantity, 0.0f, MaxEnergy);
+    m_energy = gf::clamp(message->cristalQuantity, 0.0f, MaxMinerals);
+    m_minerals = gf::clamp(message->metalQuantity, 0.0f, MaxEnergy);
 
     return gf::MessageStatus::Keep;
   }

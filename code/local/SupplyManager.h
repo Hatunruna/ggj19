@@ -25,6 +25,7 @@ namespace home {
     , quantity(quantity)
     , position(position)
     , soundStarted(false) {
+      static constexpr float SFXVol = 75.0f;
       switch (type) {
         case SupplyType::Oxygen:
           miningSound.setBuffer(gResourceManager().getSound("sounds/o2_filling.ogg"));
@@ -34,7 +35,7 @@ namespace home {
           break;
       }
       miningSound.setLoop(true);
-      miningSound.setVolume(50.0f);
+      miningSound.setVolume(SFXVol);
     }
 
     SupplyType type;

@@ -12,6 +12,8 @@ namespace home {
   static constexpr float Radius = 20.0f;
   static constexpr gf::Vector2f TileSize = {128, 64};
 
+  static constexpr float SFXVol = 75.0f;
+
   gf::Orientation getOrientation(float angle) {
     constexpr float Pi8 = gf::Pi / 8.0f;
 
@@ -52,6 +54,8 @@ namespace home {
   , m_positionClicked(TileSize * gf::Vector2f(45.0f, 42.0f))
   , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
   , m_wasJetSound(false)
+  , m_deathSound(gResourceManager().getSound("sounds/death.ogg"))
+  , m_wasDeathSound(false)
   , m_orientation(gf::Orientation::SouthEast)
   , m_moving(false)
   , m_overSupply(false)
@@ -60,9 +64,12 @@ namespace home {
    {
     gMessageManager().registerHandler<CursorClickedPosition>(&Player::onMouseClicked, this);
     gMessageManager().registerHandler<HarvestResource>(&Player::onHarvestResource, this);
+    gMessageManager().registerHandler<GameOver>(&Player::onGameOver, this);
 
     m_jetSound.setLoop(true);
-    m_jetSound.setVolume(100.0f);
+    m_jetSound.setVolume(SFXVol);
+
+    m_deathSound.setVolume(SFXVol);
 
     // load animations
     loadAnimation(m_move_west, 0);
@@ -231,6 +238,17 @@ namespace home {
     assert(id == HarvestResource::type);
 
     m_overSupply = true;
+
+    return gf::MessageStatus::Keep;
+  }
+
+  gf::MessageStatus Player::onGameOver(gf::Id id, gf::Message *msg) {
+    assert(id == GameOver::type);
+
+    if (!m_wasDeathSound) {
+      m_deathSound.play();
+      m_wasDeathSound = true;
+    }
 
     return gf::MessageStatus::Keep;
   }
