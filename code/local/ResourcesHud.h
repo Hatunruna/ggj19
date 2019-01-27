@@ -9,20 +9,27 @@
 
 namespace home {
   class ResourcesHud : public gf::Entity {
-    public :
+  public :
     ResourcesHud();
-      virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
-      virtual void update(gf::Time time) override;
-      gf::MessageStatus onResourceHarvested(gf::Id id, gf::Message *msg);        
-    private :
-      int m_minerals;
-      float m_energy;
-      bool m_messageDisplayed;
-      bool m_displayable;
-      gf::Time m_time;
-      gf::Texture &m_mineralsIcon;
-      gf::Texture &m_energyIcon;
-      gf::Font &m_font;
+    virtual void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+    virtual void update(gf::Time time) override;
+
+    gf::MessageStatus onResourceHarvested(gf::Id id, gf::Message *msg);
+    gf::MessageStatus onUnloadBackpack(gf::Id id, gf::Message *msg);
+    gf::MessageStatus onInfoSupplies(gf::Id id, gf::Message *msg);
+
+  private :
+    float m_minerals;
+    float m_energy;
+    gf::Time m_time;
+    bool m_messageDisplayed;
+    bool m_displayable;
+    gf::Texture &m_backpackIcon;
+    gf::Texture &m_mineralsIcon;
+    gf::Texture &m_energyIcon;
+    gf::Font &m_font;
+    float m_cristalQuantity;
+    float m_metalQuantity;
   };
 }
 

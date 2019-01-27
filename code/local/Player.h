@@ -34,9 +34,11 @@ namespace home {
       // Mouse click handler
       gf::MessageStatus onMouseClicked(gf::Id id, gf::Message *msg);
       gf::MessageStatus onHarvestResource(gf::Id id, gf::Message *msg);
+      gf::MessageStatus onGameOver(gf::Id id, gf::Message *msg);
 
     private:
       void loadAnimation(gf::Animation &animation, int line);
+      void loadAnimationDeath();
 
     private :
       gf::Vector2f m_position; // Current position of the player
@@ -47,12 +49,17 @@ namespace home {
       sf::Sound m_jetSound;
       bool m_wasJetSound;
 
+      sf::Sound m_deathSound;
+      bool m_wasDeathSound;
+
       gf::Orientation m_orientation;
       bool m_moving;
       bool m_overSupply;
       bool m_shipFound;
+      bool m_dead;
 
       gf::Texture &m_moveAndPauseTexture;
+      gf::Texture &m_deathTexture;
 
       gf::Animation *m_currentAnimation;
 
@@ -78,6 +85,8 @@ namespace home {
       gf::Animation m_harvest_north_east;
       gf::Animation m_harvest_south_east;
       gf::Animation m_harvest_south_west;
+
+      gf::Animation m_death;
   };
 }
 

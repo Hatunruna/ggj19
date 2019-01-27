@@ -12,7 +12,7 @@
 
 namespace home {
   // Speed of oxygen loss
-  static constexpr float OxygenLoss = 5.0f; // 0.01f
+  static constexpr float OxygenLoss = 1.0f; // 0.01f
   // Max amount of oxygen
   static constexpr float MaxOxygen = 100.0f;
   OxygenHud::OxygenHud()
@@ -37,7 +37,7 @@ namespace home {
     // Offset of the icon (to the left)
     static constexpr float OffsetIcon = 0.01f;
     // Scale of the oxygen icon
-    static constexpr float scale = 2000.0f;
+    static constexpr float scale = 3000.0f;
 
     gf::Coordinates coordinates(target);
     if (!m_gameOver) {
@@ -76,6 +76,7 @@ namespace home {
   void OxygenHud::update(gf::Time time) {
     // Low oxy limit for sound
     static constexpr float LowO2Limit = 30.0f;
+    static constexpr float SFXVol = 75.0f;
 
 
     if (m_oxygen > 0) {
@@ -83,7 +84,7 @@ namespace home {
     }
 
     if (m_oxygen <= LowO2Limit && m_oxygen > 0) {
-      m_lowO2Volume = 100.0f - m_oxygen * 3.0f;
+      m_lowO2Volume = SFXVol - m_oxygen * (3.0f * SFXVol / 100.0f);
       m_lowO2Sound.setVolume(m_lowO2Volume);
       if (!m_lowO2SoundStarted) {
         m_lowO2SoundStarted = true;
@@ -95,7 +96,7 @@ namespace home {
       m_lowO2Sound.stop();
     }
 
-    if (!m_gameFinished & m_oxygen < 0) {
+    if (!m_gameFinished && m_oxygen < 0) {
       m_gameOver = true;
       GameOver info;
       gMessageManager().sendMessage(&info);

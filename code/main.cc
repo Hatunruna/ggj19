@@ -12,6 +12,7 @@
 
 #include <SFML/Audio.hpp>
 
+#include "local/CrashedShip.h"
 #include "local/ClockHud.h"
 #include "local/DisplayMessage.h"
 #include "local/FieldOfView.h"
@@ -31,6 +32,7 @@ int main() {
   static constexpr gf::Vector2f ViewCenter(0.0f, 0.0f);
 
   static constexpr float MaxVol = 100.0f;
+  static constexpr float SFXVol = 75.0f;
 
   // initialization
 
@@ -137,6 +139,7 @@ int main() {
   home::OxygenHud oxygenHud;
   home::ResourcesHud resourcesHud;
   home::DisplayMessage displayMessage;
+  home::CrashedShip ship;
 
   home::Physics physics(layers, player);
   home::PhysicsDebugger debugger(physics);
@@ -152,6 +155,7 @@ int main() {
   mainEntities.addEntity(player);
   mainEntities.addEntity(supplies);
   mainEntities.addEntity(debugger);
+  mainEntities.addEntity(ship);
 
   gf::EntityContainer hudEntities;
   // add entities to hudEntities

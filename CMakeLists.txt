@@ -24,6 +24,7 @@ add_executable(home
   code/main.cc
   code/local/ClockHud.cc
   code/local/DisplayMessage.cc
+  code/local/CrashedShip.cc
   code/local/FieldOfView.cc
   code/local/Map.cc
   code/local/Physics.cc
