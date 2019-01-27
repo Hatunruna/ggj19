@@ -48,8 +48,8 @@ namespace home {
 
   Player::Player()
   : gf::Entity(100)
-  , m_position(TileSize * gf::Vector2f(44.0f, 42.0f))
-  , m_positionClicked(TileSize * gf::Vector2f(44.0f, 42.0f))
+  , m_position(TileSize * gf::Vector2f(45.0f, 42.0f))
+  , m_positionClicked(TileSize * gf::Vector2f(45.0f, 42.0f))
   , m_jetSound(gResourceManager().getSound("sounds/jet_engine.ogg"))
   , m_wasJetSound(false)
   , m_orientation(gf::Orientation::SouthEast)
@@ -145,7 +145,7 @@ namespace home {
           m_currentAnimation = &m_harvest_south_west;
           break;
         default:
-          //assert(false);
+          assert(false);
           break;
       }
     }
